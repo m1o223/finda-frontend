@@ -205,9 +205,10 @@ export default function RemindersPage() {
                 Add Reminder
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-md" data-testid="add-reminder-dialog">
+            <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-md" data-testid="add-reminder-dialog" aria-describedby="add-reminder-description">
               <DialogHeader>
                 <DialogTitle className="font-['Outfit'] text-xl gradient-text">New Reminder</DialogTitle>
+                <p id="add-reminder-description" className="text-sm text-zinc-400">Create a new reminder with title, description, due date, and priority.</p>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
