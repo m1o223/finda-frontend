@@ -1,51 +1,33 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Sparkles, User } from "lucide-react";
+import { Send } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const USER_AVATAR = "https://images.unsplash.com/photo-1769636929231-3cd7f853d038?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0JTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzc2NDQ5MTUyfDA&ixlib=rb-4.1.0&q=85";
 
 const initialMessages = [
   {
     id: 1,
     type: "ai",
-    content: "Hello! I'm BlueMind AI, your intelligent assistant. How can I help you today?",
+    content: "Hello! I'm Finda, your intelligent assistant. How can I help you today?",
     timestamp: new Date(Date.now() - 60000),
   },
 ];
 
-const pageVariants = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -10 },
-};
-
-const messageVariants = {
-  initial: { opacity: 0, y: 10, scale: 0.95 },
-  animate: { opacity: 1, y: 0, scale: 1 },
-};
-
 function TypingIndicator() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      className="flex items-start gap-3 mr-auto max-w-[85%]"
-    >
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="w-4 h-4 text-white" />
+    <div className="flex items-start gap-3 max-w-3xl">
+      <div className="w-8 h-8 rounded-lg bg-[#10a37f] flex items-center justify-center flex-shrink-0">
+        <span className="text-white font-bold text-sm">F</span>
       </div>
-      <div className="bg-zinc-900/80 border border-white/5 rounded-3xl rounded-tl-sm px-6 py-4">
-        <div className="flex gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-zinc-400 typing-dot" />
-          <span className="w-2 h-2 rounded-full bg-zinc-400 typing-dot" />
-          <span className="w-2 h-2 rounded-full bg-zinc-400 typing-dot" />
+      <div className="bg-[#2f2f2f] border border-[#4a4a4a] rounded-lg px-4 py-3">
+        <div className="flex gap-1">
+          <span className="w-2 h-2 rounded-full bg-[#b4b4b4] typing-dot" />
+          <span className="w-2 h-2 rounded-full bg-[#b4b4b4] typing-dot" />
+          <span className="w-2 h-2 rounded-full bg-[#b4b4b4] typing-dot" />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -55,37 +37,25 @@ function ChatMessage({ message }) {
 
   return (
     <motion.div
-      variants={messageVariants}
-      initial="initial"
-      animate="animate"
-      transition={{ duration: 0.3 }}
-      className={cn("flex items-start gap-3", isUser ? "ml-auto flex-row-reverse" : "mr-auto")}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn("flex items-start gap-3 max-w-3xl", isUser && "ml-auto flex-row-reverse")}
       data-testid={`chat-message-${message.type}`}
     >
-      {/* Avatar */}
-      {isUser ? (
-        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-white/10">
-          <img src={USER_AVATAR} alt="User" className="w-full h-full object-cover" />
-        </div>
-      ) : (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0">
-          <Sparkles className="w-4 h-4 text-white" />
-        </div>
-      )}
-
-      {/* Message Bubble */}
+      <div className={cn(
+        "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
+        isUser ? "bg-[#303030]" : "bg-[#10a37f]"
+      )}>
+        <span className="text-white font-bold text-sm">{isUser ? "U" : "F"}</span>
+      </div>
       <div className={cn("flex flex-col gap-1", isUser ? "items-end" : "items-start")}>
-        <div
-          className={cn(
-            "px-6 py-4 text-[15px] leading-relaxed shadow-lg",
-            isUser
-              ? "chat-bubble-user text-white rounded-3xl rounded-tr-sm max-w-[80%]"
-              : "bg-zinc-900/80 border border-white/5 text-zinc-200 rounded-3xl rounded-tl-sm max-w-[85%]"
-          )}
-        >
+        <div className={cn(
+          "px-4 py-3 rounded-lg text-[15px]",
+          isUser ? "bg-[#303030] text-white" : "bg-[#2f2f2f] border border-[#4a4a4a] text-white"
+        )}>
           {message.content}
         </div>
-        <span className="text-xs text-zinc-500 px-2">{time}</span>
+        <span className="text-xs text-[#6b6b6b] px-1">{time}</span>
       </div>
     </motion.div>
   );
@@ -96,118 +66,83 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef(null);
-  const inputRef = useRef(null);
 
   const scrollToBottom = () => {
     if (scrollRef.current) {
-      const scrollContainer = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
+      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) viewport.scrollTop = viewport.scrollHeight;
     }
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
+  useEffect(() => { scrollToBottom(); }, [messages, isTyping]);
 
   const handleSend = () => {
     if (!input.trim()) return;
-
-    const userMessage = {
-      id: Date.now(),
-      type: "user",
-      content: input.trim(),
-      timestamp: new Date(),
-    };
-
+    const userMessage = { id: Date.now(), type: "user", content: input.trim(), timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
 
-    // Simulate AI response
     setTimeout(() => {
-      const aiResponses = [
+      const responses = [
         "That's a great question! Let me help you with that.",
-        "I understand what you're looking for. Here's what I can suggest...",
-        "Interesting! I'd be happy to assist you with this.",
-        "Thanks for sharing that with me. Here's my perspective...",
-        "Let me think about this for a moment... I have some ideas that might help.",
+        "I understand. Here's what I can suggest...",
+        "Interesting! I'd be happy to assist.",
+        "Thanks for sharing. Here's my perspective...",
       ];
-      const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-
       setIsTyping(false);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          type: "ai",
-          content: randomResponse,
-          timestamp: new Date(),
-        },
-      ]);
+      setMessages((prev) => [...prev, {
+        id: Date.now(),
+        type: "ai",
+        content: responses[Math.floor(Math.random() * responses.length)],
+        timestamp: new Date(),
+      }]);
     }, 1500);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
   };
 
   return (
     <motion.div
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{ duration: 0.3 }}
-      className="h-screen flex flex-col"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="h-screen flex flex-col bg-[#212121]"
       data-testid="chat-page"
     >
-      {/* Header */}
-      <header className="px-6 py-4 border-b border-white/5 backdrop-blur-xl bg-zinc-950/50">
-        <h1 className="text-xl font-semibold font-['Outfit'] gradient-text">BlueMind AI</h1>
-        <p className="text-sm text-zinc-500">Your intelligent assistant</p>
+      <header className="px-6 py-4 border-b border-[#4a4a4a]">
+        <h1 className="text-lg font-semibold">Finda</h1>
+        <p className="text-sm text-[#b4b4b4]">Your intelligent assistant</p>
       </header>
 
-      {/* Chat Messages */}
       <ScrollArea ref={scrollRef} className="flex-1 px-6 py-6">
-        <div className="max-w-4xl mx-auto space-y-6 pb-32">
+        <div className="max-w-3xl mx-auto space-y-6 pb-32">
           <AnimatePresence>
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
-            ))}
+            {messages.map((message) => <ChatMessage key={message.id} message={message} />)}
             {isTyping && <TypingIndicator />}
           </AnimatePresence>
         </div>
       </ScrollArea>
 
-      {/* Input Area */}
-      <div className="fixed bottom-8 left-[calc(50%+2.5rem)] -translate-x-1/2 w-[calc(100%-7rem)] max-w-3xl z-40">
-        <div
-          className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 rounded-full p-2 pl-6 flex items-center shadow-2xl glow-purple"
-          data-testid="chat-input-container"
-        >
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Message BlueMind AI..."
-            className="flex-1 bg-transparent text-white placeholder-zinc-500 outline-none text-[15px]"
-            data-testid="chat-input"
-          />
-          <Button
-            onClick={handleSend}
-            disabled={!input.trim()}
-            className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all duration-200"
-            data-testid="chat-send-button"
-          >
-            <Send className="w-4 h-4 text-white" />
-          </Button>
+      <div className="p-6 border-t border-[#4a4a4a]">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 bg-[#303030] border border-[#4a4a4a] rounded-xl p-3" data-testid="chat-input-container">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSend())}
+              placeholder="Message Finda..."
+              className="flex-1 bg-transparent text-white placeholder-[#6b6b6b] outline-none px-3 py-2 text-[15px]"
+              data-testid="chat-input"
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className="w-11 h-11 rounded-xl bg-[#10a37f] hover:bg-[#0e8f70] disabled:opacity-50 disabled:cursor-not-allowed p-0 transition-all duration-200"
+              data-testid="chat-send-button"
+            >
+              <Send className="w-4 h-4 text-white" />
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>
