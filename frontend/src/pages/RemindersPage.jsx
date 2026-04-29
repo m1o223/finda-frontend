@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -59,10 +59,10 @@ export default function RemindersPage() {
                 <Plus className="w-4 h-4 mr-2" />Add Reminder
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-[#2f2f2f] border-[#4a4a4a] text-white max-w-md" data-testid="add-reminder-dialog" aria-describedby="dialog-desc">
+            <DialogContent className="bg-[#2f2f2f] border-[#4a4a4a] text-white max-w-md" data-testid="add-reminder-dialog">
               <DialogHeader>
                 <DialogTitle>New Reminder</DialogTitle>
-                <p id="dialog-desc" className="text-sm text-[#b4b4b4]">Create a new reminder</p>
+                <DialogDescription className="text-[#b4b4b4]">Create a new reminder</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
