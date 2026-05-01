@@ -19,7 +19,7 @@ function AppContent() {
   const showSidebar = dashboardRoutes.some(route => location.pathname.startsWith(route));
 
   return (
-    <div className="min-h-screen bg-[#212121] text-white">
+    <div className={showSidebar ? "min-h-screen bg-[#212121] text-white" : "min-h-screen"}>
       {showSidebar && <Sidebar />}
       
       <main className={showSidebar ? "ml-16 min-h-screen" : ""}>

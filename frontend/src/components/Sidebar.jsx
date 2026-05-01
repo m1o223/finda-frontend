@@ -22,7 +22,7 @@ export default function Sidebar() {
         <TooltipTrigger asChild>
           <button
             onClick={() => navigate("/")}
-            className="w-10 h-10 rounded-lg bg-[#10a37f] flex items-center justify-center mb-6 hover:bg-[#0e8f70] transition-colors"
+            className="w-10 h-10 rounded-lg bg-[#193B68] flex items-center justify-center mb-6 hover:bg-[#142f54] transition-colors"
             data-testid="sidebar-logo"
           >
             <span className="text-white font-bold text-lg">F</span>
