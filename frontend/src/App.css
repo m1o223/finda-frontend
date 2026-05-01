@@ -27,3 +27,14 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Text overflow prevention */
+.break-words {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+}
