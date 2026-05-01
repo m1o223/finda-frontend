@@ -31,13 +31,13 @@ export default function LoginPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-[#212121] text-white flex items-center justify-center p-6"
+      className="min-h-screen bg-white text-[#111827] flex items-center justify-center p-6"
       data-testid="login-page"
     >
       <Button
-        onClick={() => navigate("/auth")}
+        onClick={() => navigate("/")}
         variant="ghost"
-        className="fixed top-6 left-6 text-[#b4b4b4] hover:text-white hover:bg-[#303030]"
+        className="fixed top-6 left-6 text-[#6B7280] hover:text-[#111827] hover:bg-[#F5F7FA]"
         data-testid="back-button"
       >
         <ArrowLeft className="w-5 h-5 mr-2" />
@@ -49,101 +49,89 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm"
       >
-        <div className="bg-[#2f2f2f] border border-[#4a4a4a] rounded-2xl p-10">
-          <div className="text-center mb-8">
-            <div className="w-14 h-14 rounded-xl bg-[#10a37f] flex items-center justify-center mx-auto mb-5">
-              <span className="text-white font-bold text-2xl">F</span>
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-xl bg-[#193B68] flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-bold text-xl">F</span>
+          </div>
+          <h1 className="text-xl font-semibold text-[#111827]">Welcome back</h1>
+          <p className="text-[#6B7280] text-sm mt-1">Sign in to your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="text-sm font-medium text-[#111827] mb-2 block">Email</label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
+              <Input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="Enter your email"
+                className="pl-11 py-6 bg-white border-[#E5E7EB] text-[#111827] placeholder-[#9CA3AF] rounded-xl text-sm focus:border-[#193B68] focus:ring-1 focus:ring-[#193B68]"
+                data-testid="email-input"
+              />
             </div>
-            <h1 className="text-2xl font-semibold">Welcome Back</h1>
-            <p className="text-[#b4b4b4] text-sm mt-2">Login to your account</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="text-sm text-[#b4b4b4] mb-1.5 block">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#b4b4b4]" />
-                <Input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="Enter your email"
-                  className="pl-10 py-5 bg-[#303030] border-[#4a4a4a] text-white placeholder-[#6b6b6b] rounded-lg focus:border-[#10a37f] focus:ring-[#10a37f]"
-                  data-testid="email-input"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm text-[#b4b4b4] mb-1.5 block">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#b4b4b4]" />
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="Enter your password"
-                  className="pl-10 pr-10 py-5 bg-[#303030] border-[#4a4a4a] text-white placeholder-[#6b6b6b] rounded-lg focus:border-[#10a37f] focus:ring-[#10a37f]"
-                  data-testid="password-input"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#b4b4b4] hover:text-white"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={setRememberMe}
-                  className="border-[#4a4a4a] data-[state=checked]:bg-[#10a37f] data-[state=checked]:border-[#10a37f]"
-                  data-testid="remember-checkbox"
-                />
-                <label htmlFor="remember" className="text-sm text-[#b4b4b4] cursor-pointer">
-                  Remember me
-                </label>
-              </div>
+          <div>
+            <label className="text-sm font-medium text-[#111827] mb-2 block">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="Enter your password"
+                className="pl-11 pr-11 py-6 bg-white border-[#E5E7EB] text-[#111827] placeholder-[#9CA3AF] rounded-xl text-sm focus:border-[#193B68] focus:ring-1 focus:ring-[#193B68]"
+                data-testid="password-input"
+              />
               <button
                 type="button"
-                className="text-sm text-[#10a37f] hover:underline"
-                data-testid="forgot-password-link"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280]"
               >
-                Forgot password?
+                {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
               </button>
             </div>
+          </div>
 
-            <Button
-              type="submit"
-              disabled={!isFormValid || isLoading}
-              className="w-full py-6 text-base bg-[#10a37f] hover:bg-[#0e8f70] text-white rounded-xl disabled:opacity-50 transition-all duration-200 hover:scale-[1.01]"
-              data-testid="login-submit-button"
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Logging in...
-                </span>
-              ) : "Login"}
-            </Button>
-          </form>
-
-          <p className="text-center text-[#b4b4b4] text-sm mt-6">
-            Don't have an account?{" "}
-            <button
-              onClick={() => navigate("/auth/register")}
-              className="text-[#10a37f] hover:underline"
-              data-testid="register-link"
-            >
-              Create one
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="remember"
+                checked={rememberMe}
+                onCheckedChange={setRememberMe}
+                className="border-[#E5E7EB] data-[state=checked]:bg-[#193B68] data-[state=checked]:border-[#193B68]"
+                data-testid="remember-checkbox"
+              />
+              <label htmlFor="remember" className="text-sm text-[#6B7280] cursor-pointer">Remember me</label>
+            </div>
+            <button type="button" className="text-sm text-[#193B68] hover:underline" data-testid="forgot-password-link">
+              Forgot password?
             </button>
-          </p>
-        </div>
+          </div>
+
+          <Button
+            type="submit"
+            disabled={!isFormValid || isLoading}
+            className="w-full py-6 text-base bg-[#193B68] hover:bg-[#142f54] text-white rounded-xl font-medium disabled:opacity-50"
+            data-testid="login-submit-button"
+          >
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Signing in...
+              </span>
+            ) : "Sign in"}
+          </Button>
+        </form>
+
+        <p className="text-center text-[#6B7280] text-sm mt-8">
+          Don't have an account?{" "}
+          <button onClick={() => navigate("/auth/register")} className="text-[#193B68] font-medium hover:underline" data-testid="register-link">
+            Create one
+          </button>
+        </p>
       </motion.div>
     </motion.div>
   );
