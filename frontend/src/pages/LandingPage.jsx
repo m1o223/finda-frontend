@@ -27,8 +27,8 @@ function Navbar() {
 
   return (
     <nav className="w-full px-4 sm:px-6 md:px-12 lg:px-20 py-4 sm:py-5 flex items-center justify-between relative" data-testid="landing-navbar">
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-        <img src={LOGO_URL} alt="Finda" className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-contain bg-transparent flex-shrink-0" />
+      <div className="flex items-center gap-2 min-w-0">
+        <img src={LOGO_URL} alt="Finda" className="w-12 h-12 sm:w-[52px] sm:h-[52px] object-contain flex-shrink-0 -my-1" style={{ background: 'none' }} />
         <span className="text-lg sm:text-xl font-semibold text-[#111827]">Finda</span>
       </div>
 
@@ -84,7 +84,7 @@ function HeroMockUI() {
       <div className="flex flex-col sm:flex-row">
         {/* Sidebar icons - horizontal on very small, vertical on sm+ */}
         <div className="hidden sm:flex w-16 md:w-[72px] border-r border-[#E5E7EB] flex-col items-center py-5 md:py-6 gap-4 md:gap-6 bg-[#F9FAFB]">
-          <img src={LOGO_URL} alt="F" className="w-9 h-9 md:w-10 md:h-10 rounded-lg object-contain bg-transparent" />
+          <img src={LOGO_URL} alt="F" className="w-10 h-10 md:w-11 md:h-11 object-contain" style={{ background: 'none' }} />
           <MessageSquare className="w-5 h-5 md:w-[22px] md:h-[22px] text-[#6B7280]" />
           <Sparkles className="w-5 h-5 md:w-[22px] md:h-[22px] text-[#6B7280]" />
           <Bell className="w-5 h-5 md:w-[22px] md:h-[22px] text-[#6B7280]" />
@@ -272,7 +272,7 @@ function BottomCTA() {
       <div className="max-w-6xl mx-auto">
         <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-2xl px-6 sm:px-8 md:px-14 py-8 sm:py-10 md:py-12 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-5 text-center sm:text-left">
-            <img src={LOGO_URL} alt="Finda" className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-contain bg-transparent flex-shrink-0" />
+            <img src={LOGO_URL} alt="Finda" className="w-14 h-14 sm:w-16 sm:h-16 object-contain flex-shrink-0" style={{ background: 'none' }} />
             <div>
               <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#111827] break-words">Start using Finda today</h3>
               <p className="text-[#6B7280] text-sm mt-1.5 break-words">Your AI assistant for a smarter and more productive life.</p>
