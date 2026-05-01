@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare, Play, Bell, UserPlus, LayoutGrid, Sparkles, ArrowRight, Send, CheckCircle } from "lucide-react";
 
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_bluemind-dashboard/artifacts/laz1bzfy_6028489244713618696.jpg";
+
 function useScrollFadeIn() {
   const ref = useRef(null);
   useEffect(() => {
@@ -22,94 +24,76 @@ function useScrollFadeIn() {
 function Navbar() {
   const navigate = useNavigate();
   return (
-    <nav className="w-full px-6 md:px-12 lg:px-20 py-4 flex items-center justify-between border-b border-[#E5E7EB]" data-testid="landing-navbar">
-      <div className="flex items-center gap-2">
-        <div className="w-9 h-9 rounded-lg bg-[#193B68] flex items-center justify-center">
-          <span className="text-white font-bold text-lg">F</span>
-        </div>
+    <nav className="w-full px-6 md:px-12 lg:px-20 py-5 flex items-center justify-between" data-testid="landing-navbar">
+      <div className="flex items-center gap-2.5">
+        <img src={LOGO_URL} alt="Finda" className="w-9 h-9 rounded-lg object-cover" />
         <span className="text-lg font-semibold text-[#111827]">Finda</span>
       </div>
 
       <div className="hidden md:flex items-center gap-8">
         <a href="#features" className="text-[#6B7280] hover:text-[#111827] transition-colors text-sm font-medium">Features</a>
-        <a href="#how-it-works" className="text-[#6B7280] hover:text-[#111827] transition-colors text-sm font-medium">How it Works</a>
-        <a href="#about" className="text-[#6B7280] hover:text-[#111827] transition-colors text-sm font-medium">About Us</a>
       </div>
 
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => navigate("/auth/login")}
-          className="text-[#6B7280] hover:text-[#111827] transition-colors text-sm font-medium hidden sm:block"
-          data-testid="nav-login"
-        >
-          Log in
-        </button>
-        <button
-          onClick={() => navigate("/auth/register")}
-          className="bg-[#193B68] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02]"
-          data-testid="nav-get-started"
-        >
-          Get Started
-        </button>
-      </div>
+      <button
+        onClick={() => navigate("/auth/register")}
+        className="bg-[#193B68] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02]"
+        data-testid="nav-get-started"
+      >
+        Get Started
+      </button>
     </nav>
   );
 }
 
 function HeroMockUI() {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-lg shadow-[#193B68]/5 overflow-hidden w-full max-w-md" data-testid="hero-mock-ui">
+    <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-xl shadow-[#193B68]/8 overflow-hidden w-full max-w-lg" data-testid="hero-mock-ui">
       <div className="flex">
         {/* Sidebar icons */}
-        <div className="w-14 border-r border-[#E5E7EB] flex flex-col items-center py-4 gap-4 bg-[#F9FAFB]">
-          <div className="w-8 h-8 rounded-lg bg-[#193B68] flex items-center justify-center">
-            <span className="text-white font-bold text-xs">F</span>
-          </div>
+        <div className="w-16 border-r border-[#E5E7EB] flex flex-col items-center py-5 gap-5 bg-[#F9FAFB]">
+          <img src={LOGO_URL} alt="F" className="w-9 h-9 rounded-lg object-cover" />
           <MessageSquare className="w-5 h-5 text-[#6B7280]" />
           <Sparkles className="w-5 h-5 text-[#6B7280]" />
           <Bell className="w-5 h-5 text-[#6B7280]" />
           <Play className="w-5 h-5 text-[#6B7280]" />
-          <div className="mt-auto">
-            <Sparkles className="w-5 h-5 text-[#6B7280]" />
-          </div>
         </div>
 
         {/* Main content */}
-        <div className="flex-1 p-5">
-          <p className="text-[#111827] font-medium mb-4 text-sm">
-            <span className="mr-1">👋</span> Hello! How can I help you today?
+        <div className="flex-1 p-7">
+          <p className="text-[#111827] font-medium mb-5 text-base">
+            <span className="mr-1.5">👋</span> Hello! How can I help you today?
           </p>
 
           {/* Input */}
-          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-4 py-2.5 mb-5">
+          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-full px-5 py-3 mb-6">
             <span className="text-[#9CA3AF] text-sm flex-1">Ask me anything...</span>
-            <div className="w-8 h-8 rounded-full bg-[#193B68] flex items-center justify-center">
-              <Send className="w-3.5 h-3.5 text-white" />
+            <div className="w-9 h-9 rounded-full bg-[#193B68] flex items-center justify-center">
+              <Send className="w-4 h-4 text-white" />
             </div>
           </div>
 
           {/* Mini feature cards */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-              <div className="w-9 h-9 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-2">
-                <MessageSquare className="w-4 h-4 text-[#193B68]" />
+            <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-4 text-center">
+              <div className="w-10 h-10 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-2.5">
+                <MessageSquare className="w-5 h-5 text-[#193B68]" />
               </div>
-              <p className="text-xs font-medium text-[#111827]">AI Chat</p>
-              <p className="text-[10px] text-[#6B7280] mt-0.5">Talk with AI naturally</p>
+              <p className="text-xs font-semibold text-[#111827]">AI Chat</p>
+              <p className="text-[10px] text-[#6B7280] mt-1">Talk with AI naturally</p>
             </div>
-            <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-              <div className="w-9 h-9 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-2">
-                <Play className="w-4 h-4 text-[#193B68]" />
+            <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-4 text-center">
+              <div className="w-10 h-10 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-2.5">
+                <Play className="w-5 h-5 text-[#193B68]" />
               </div>
-              <p className="text-xs font-medium text-[#111827]">AI Learning</p>
-              <p className="text-[10px] text-[#6B7280] mt-0.5">Watch and learn with AI</p>
+              <p className="text-xs font-semibold text-[#111827]">AI Learning</p>
+              <p className="text-[10px] text-[#6B7280] mt-1">Watch and learn with AI</p>
             </div>
-            <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-              <div className="w-9 h-9 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-2">
-                <Bell className="w-4 h-4 text-[#193B68]" />
+            <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-4 text-center">
+              <div className="w-10 h-10 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-2.5">
+                <Bell className="w-5 h-5 text-[#193B68]" />
               </div>
-              <p className="text-xs font-medium text-[#111827]">Smart Reminders</p>
-              <p className="text-[10px] text-[#6B7280] mt-0.5">Organize your tasks easily</p>
+              <p className="text-xs font-semibold text-[#111827]">Smart Reminders</p>
+              <p className="text-[10px] text-[#6B7280] mt-1">Organize your tasks easily</p>
             </div>
           </div>
         </div>
@@ -123,33 +107,26 @@ function HeroSection() {
   const ref = useScrollFadeIn();
 
   return (
-    <section ref={ref} className="landing-section px-6 md:px-12 lg:px-20 py-16 md:py-24" data-testid="hero-section">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+    <section ref={ref} className="landing-section px-6 md:px-12 lg:px-20 py-20 md:py-28" data-testid="hero-section">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
         {/* Left */}
-        <div className="flex-1 max-w-xl">
-          <span className="inline-block bg-[#EEF2FF] text-[#193B68] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-wide uppercase">
+        <div className="flex-1 max-w-lg">
+          <span className="inline-block bg-[#EEF2FF] text-[#193B68] text-xs font-semibold px-4 py-1.5 rounded-full mb-7 tracking-wide uppercase">
             AI Assistant for Everyday Life
           </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#111827] leading-tight mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#111827] leading-tight mb-7">
             Your AI assistant for learning, chatting, and staying organized
           </h1>
-          <p className="text-[#6B7280] text-lg leading-relaxed mb-8">
+          <p className="text-[#6B7280] text-lg leading-relaxed mb-9">
             Finda brings the power of AI to your fingertips. Chat, learn, set reminders, and get things done smarter and faster.
           </p>
-          <div className="flex flex-wrap items-center gap-4 mb-5">
+          <div className="mb-5">
             <button
               onClick={() => navigate("/auth/register")}
-              className="bg-[#193B68] text-white px-7 py-3.5 rounded-lg font-medium hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02]"
+              className="bg-[#193B68] text-white px-8 py-4 rounded-xl font-medium text-base hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02]"
               data-testid="hero-get-started"
             >
               Get Started
-            </button>
-            <button
-              onClick={() => navigate("/chat")}
-              className="border border-[#E5E7EB] text-[#111827] px-7 py-3.5 rounded-lg font-medium hover:bg-[#F5F7FA] transition-all duration-200"
-              data-testid="hero-try-demo"
-            >
-              Try Demo
             </button>
           </div>
           <div className="flex items-center gap-2 text-[#6B7280] text-sm">
@@ -159,7 +136,7 @@ function HeroSection() {
         </div>
 
         {/* Right */}
-        <div className="flex-1 flex justify-center lg:justify-end">
+        <div className="flex-1 flex justify-center lg:justify-end w-full">
           <HeroMockUI />
         </div>
       </div>
@@ -188,14 +165,14 @@ function FeaturesSection() {
   ];
 
   return (
-    <section ref={ref} id="features" className="landing-section px-6 md:px-12 lg:px-20 py-20 bg-white" data-testid="features-section">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#111827] mb-3">Everything you need in one place</h2>
+    <section ref={ref} id="features" className="landing-section px-6 md:px-12 lg:px-20 py-24 bg-white" data-testid="features-section">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#111827] mb-4">Everything you need in one place</h2>
           <p className="text-[#6B7280] text-lg">Powerful features to simplify your day-to-day life.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
           {features.map((feature) => (
             <div
               key={feature.title}
@@ -224,28 +201,26 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section ref={ref} id="how-it-works" className="landing-section px-6 md:px-12 lg:px-20 py-20 bg-[#F9FAFB]" data-testid="how-it-works-section">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#111827] mb-3">How it works</h2>
+    <section ref={ref} id="how-it-works" className="landing-section px-6 md:px-12 lg:px-20 py-24 bg-[#F9FAFB]" data-testid="how-it-works-section">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#111827] mb-4">How it works</h2>
           <p className="text-[#6B7280] text-lg">Get started in just 3 simple steps.</p>
         </div>
 
         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-center gap-12 md:gap-0">
           {/* Connecting line */}
-          <div className="hidden md:block absolute top-8 left-1/2 -translate-x-1/2 w-[60%] h-px bg-[#E5E7EB]" />
+          <div className="hidden md:block absolute top-8 left-1/2 -translate-x-1/2 w-[55%] h-px bg-[#E5E7EB]" />
 
-          {steps.map((step, index) => (
+          {steps.map((step) => (
             <div key={step.num} className="flex-1 flex flex-col items-center text-center relative z-10">
-              {/* Number circle */}
-              <div className="w-10 h-10 rounded-full bg-[#EEF2FF] border-2 border-[#193B68] flex items-center justify-center mb-4">
+              <div className="w-10 h-10 rounded-full bg-[#EEF2FF] border-2 border-[#193B68] flex items-center justify-center mb-5">
                 <span className="text-[#193B68] font-bold text-sm">{step.num}</span>
               </div>
-              {/* Icon */}
               <div className="w-14 h-14 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4">
                 <step.icon className="w-6 h-6 text-[#193B68]" />
               </div>
-              <h3 className="font-semibold text-[#111827] mb-1">{step.title}</h3>
+              <h3 className="font-semibold text-[#111827] mb-1.5">{step.title}</h3>
               <p className="text-sm text-[#6B7280] max-w-[200px]">{step.description}</p>
             </div>
           ))}
@@ -260,21 +235,19 @@ function BottomCTA() {
   const ref = useScrollFadeIn();
 
   return (
-    <section ref={ref} id="about" className="landing-section px-6 md:px-12 lg:px-20 py-16" data-testid="bottom-cta-section">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-2xl px-8 md:px-12 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+    <section ref={ref} className="landing-section px-6 md:px-12 lg:px-20 py-20" data-testid="bottom-cta-section">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-2xl px-8 md:px-14 py-12 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-5">
-            <div className="w-12 h-12 rounded-xl bg-[#193B68] flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-xl">F</span>
-            </div>
+            <img src={LOGO_URL} alt="Finda" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
             <div>
               <h3 className="text-xl md:text-2xl font-bold text-[#111827]">Start using Finda today</h3>
-              <p className="text-[#6B7280] text-sm mt-1">Your AI assistant for a smarter and more productive life.</p>
+              <p className="text-[#6B7280] text-sm mt-1.5">Your AI assistant for a smarter and more productive life.</p>
             </div>
           </div>
           <button
             onClick={() => navigate("/auth/register")}
-            className="bg-[#193B68] text-white px-7 py-3.5 rounded-lg font-medium hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02] flex items-center gap-2 whitespace-nowrap"
+            className="bg-[#193B68] text-white px-8 py-4 rounded-xl font-medium hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02] flex items-center gap-2 whitespace-nowrap"
             data-testid="cta-get-started"
           >
             Get Started Now
