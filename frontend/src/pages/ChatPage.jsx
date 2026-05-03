@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, Bell, BookOpen, Clock, UserCircle, Plus, Send, Menu, X, Sparkles, PanelLeftClose, PanelLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useApp } from "@/context/AppContext";
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_bluemind-dashboard/artifacts/laz1bzfy_6028489244713618696.jpg";
 
@@ -48,13 +49,15 @@ function TypingText({ text, onComplete }) {
 
 function Sidebar({ isOpen, onToggle, onNewChat, isMobile, onClose }) {
   const navigate = useNavigate();
+  const { prefs, t } = useApp();
+  const isDark = prefs.theme === "dark";
 
   const navItems = [
-    { id: "chat", icon: MessageSquare, label: "Chat", action: onNewChat },
-    { id: "reminders", icon: Bell, label: "Reminders", action: () => navigate("/reminders") },
-    { id: "learning", icon: BookOpen, label: "Learning" },
-    { id: "history", icon: Clock, label: "History" },
-    { id: "profile", icon: UserCircle, label: "Profile" },
+    { id: "chat", icon: MessageSquare, label: t("chat"), action: onNewChat },
+    { id: "reminders", icon: Bell, label: t("reminders"), action: () => navigate("/reminders") },
+    { id: "learning", icon: BookOpen, label: t("learning") },
+    { id: "history", icon: Clock, label: t("history") },
+    { id: "profile", icon: UserCircle, label: t("profile"), action: () => navigate("/profile") },
   ];
 
   return (
@@ -63,24 +66,25 @@ function Sidebar({ isOpen, onToggle, onNewChat, isMobile, onClose }) {
       animate={{ width: isOpen ? 220 : 64 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
       className={cn(
-        "h-full bg-[#F7F8FA] border-r border-[#E5E7EB] flex flex-col overflow-hidden flex-shrink-0",
+        "h-full border-r flex flex-col overflow-hidden flex-shrink-0",
+        isDark ? "bg-[#1e1e1e] border-[#333]" : "bg-[#F7F8FA] border-[#E5E7EB]",
         isMobile && "absolute left-0 top-0 z-50 shadow-xl"
       )}
       data-testid="sidebar"
     >
       {/* Top: Logo + Toggle */}
-      <div className="flex items-center justify-between p-3 border-b border-[#E5E7EB]">
+      <div className={cn("flex items-center justify-between p-3 border-b", isDark ? "border-[#333]" : "border-[#E5E7EB]")}>
         <button
           onClick={onNewChat}
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
           data-testid="logo-new-chat"
         >
           <img src={LOGO_URL} alt="Finda" className="w-9 h-9 object-contain flex-shrink-0" style={{ background: 'none' }} />
-          {isOpen && <span className="text-base font-semibold text-[#111827] whitespace-nowrap">Finda</span>}
+          {isOpen && <span className={cn("text-base font-semibold whitespace-nowrap", isDark ? "text-white" : "text-[#111827]")}>Finda</span>}
         </button>
         <button
           onClick={onToggle}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#111827] hover:bg-[#E5E7EB] transition-all duration-200 cursor-pointer"
+          className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer", isDark ? "text-[#888] hover:text-white hover:bg-[#333]" : "text-[#6B7280] hover:text-[#111827] hover:bg-[#E5E7EB]")}
           data-testid="sidebar-toggle"
         >
           {isOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeft className="w-4 h-4" />}
@@ -125,6 +129,8 @@ function Sidebar({ isOpen, onToggle, onNewChat, isMobile, onClose }) {
 
 function ChatMessage({ message, isLatestAi }) {
   const isUser = message.role === "user";
+  const { prefs } = useApp();
+  const isDark = prefs.theme === "dark";
 
   return (
     <motion.div
@@ -136,8 +142,8 @@ function ChatMessage({ message, isLatestAi }) {
     >
       {/* AI icon */}
       {!isUser && (
-        <div className="w-7 h-7 rounded-lg bg-[#EEF2FF] border border-[#E0E7FF] flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
-          <Sparkles className="w-3.5 h-3.5 text-[#193B68]" />
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center mr-3 mt-0.5 flex-shrink-0" style={{ backgroundColor: prefs.accentColor + '15' }}>
+          <Sparkles className="w-3.5 h-3.5" style={{ color: prefs.accentColor }} />
         </div>
       )}
 
@@ -145,9 +151,10 @@ function ChatMessage({ message, isLatestAi }) {
         className={cn(
           "max-w-[75%] text-[15px] leading-relaxed",
           isUser
-            ? "bg-[#193B68] text-white px-5 py-3 rounded-2xl rounded-br-md"
-            : "text-[#374151]"
+            ? "text-white px-5 py-3 rounded-2xl rounded-br-md"
+            : (isDark ? "text-[#e0e0e0]" : "text-[#374151]")
         )}
+        style={isUser ? { backgroundColor: prefs.chatColor } : {}}
       >
         {!isUser && isLatestAi && message.isTyping ? (
           <TypingText text={message.content} onComplete={message.onTypingComplete} />
@@ -166,6 +173,8 @@ export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const messagesEndRef = useRef(null);
+  const { prefs, t } = useApp();
+  const isDark = prefs.theme === "dark";
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -214,7 +223,7 @@ export default function ChatPage() {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="h-screen flex bg-white overflow-hidden" data-testid="chat-page">
+    <div className={cn("h-screen flex overflow-hidden", isDark ? "bg-[#1a1a1a]" : "bg-white")} data-testid="chat-page">
       {/* Mobile overlay */}
       {showMobileSidebar && (
         <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={() => setShowMobileSidebar(false)} />
@@ -235,20 +244,20 @@ export default function ChatPage() {
       {/* Main area */}
       <div className="flex-1 flex flex-col h-full min-w-0">
         {/* Header */}
-        <header className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[#E5E7EB]">
+        <header className={cn("flex items-center justify-between px-4 sm:px-6 py-3.5 border-b", isDark ? "border-[#333]" : "border-[#E5E7EB]")}>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowMobileSidebar(true)}
-              className="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] transition-colors cursor-pointer"
+              className={cn("md:hidden w-9 h-9 rounded-lg flex items-center justify-center transition-colors cursor-pointer", isDark ? "text-[#999] hover:text-white hover:bg-[#333]" : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]")}
               data-testid="mobile-menu-btn"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <span className="text-[#111827] font-medium text-base">Finda</span>
+            <span className={cn("font-medium text-base", isDark ? "text-white" : "text-[#111827]")}>Finda</span>
           </div>
           <button
             onClick={handleNewChat}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] transition-colors cursor-pointer"
+            className={cn("w-9 h-9 rounded-lg flex items-center justify-center transition-colors cursor-pointer", isDark ? "text-[#999] hover:text-white hover:bg-[#333]" : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]")}
             data-testid="header-new-chat"
           >
             <Plus className="w-5 h-5" />
@@ -264,17 +273,17 @@ export default function ChatPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-10"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#EEF2FF] border border-[#E0E7FF] flex items-center justify-center mx-auto mb-5">
-                  <Sparkles className="w-6 h-6 text-[#193B68]" />
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: prefs.accentColor + '15' }}>
+                  <Sparkles className="w-6 h-6" style={{ color: prefs.accentColor }} />
                 </div>
-                <h2 className="text-[#111827] text-2xl sm:text-3xl font-semibold mb-2">How can I help you today?</h2>
-                <p className="text-[#9CA3AF] text-sm">Ask me anything — I'm here to assist.</p>
+                <h2 className={cn("text-2xl sm:text-3xl font-semibold mb-2", isDark ? "text-white" : "text-[#111827]")}>{t("howCanIHelp")}</h2>
+                <p className={cn("text-sm", isDark ? "text-[#888]" : "text-[#9CA3AF]")}>{t("askMeAnything")}</p>
               </motion.div>
 
               {/* Centered input */}
               <div className="w-full max-w-2xl">
-                <div className="flex items-center gap-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-full px-4 py-3 focus-within:border-[#193B68]/40 focus-within:shadow-sm transition-all duration-200">
-                  <button className="w-8 h-8 rounded-full flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F3F4F6] transition-colors cursor-pointer">
+                <div className={cn("flex items-center gap-2 border rounded-full px-4 py-3 transition-all duration-200", isDark ? "bg-[#2a2a2a] border-[#3a3a3a] focus-within:border-[#555]" : "bg-[#F9FAFB] border-[#E5E7EB] focus-within:border-[#193B68]/40 focus-within:shadow-sm")}>
+                  <button className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer", isDark ? "text-[#666] hover:text-white hover:bg-[#333]" : "text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F3F4F6]")}>
                     <Plus className="w-4 h-4" />
                   </button>
                   <input
@@ -282,8 +291,8 @@ export default function ChatPage() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask anything..."
-                    className="flex-1 bg-transparent text-[#111827] placeholder-[#9CA3AF] outline-none text-[15px]"
+                    placeholder={t("askAnything")}
+                    className={cn("flex-1 bg-transparent outline-none text-[15px]", isDark ? "text-white placeholder-[#666]" : "text-[#111827] placeholder-[#9CA3AF]")}
                     data-testid="chat-input"
                   />
                   <button
@@ -292,9 +301,10 @@ export default function ChatPage() {
                     className={cn(
                       "w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer",
                       input.trim()
-                        ? "bg-[#193B68] text-white hover:bg-[#142f54]"
-                        : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
+                        ? "text-white hover:opacity-90"
+                        : (isDark ? "bg-[#333] text-[#555] cursor-not-allowed" : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed")
                     )}
+                    style={input.trim() ? { backgroundColor: prefs.accentColor } : {}}
                     data-testid="chat-send-button"
                   >
                     <Send className="w-4 h-4" />
@@ -338,10 +348,10 @@ export default function ChatPage() {
 
         {/* Bottom input */}
         {hasMessages && (
-          <div className="border-t border-[#E5E7EB] px-4 sm:px-6 py-4 bg-white">
+          <div className={cn("border-t px-4 sm:px-6 py-4", isDark ? "border-[#333] bg-[#1a1a1a]" : "border-[#E5E7EB] bg-white")}>
             <div className="max-w-3xl mx-auto">
-              <div className="flex items-center gap-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-full px-4 py-3 focus-within:border-[#193B68]/40 focus-within:shadow-sm transition-all duration-200">
-                <button className="w-8 h-8 rounded-full flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F3F4F6] transition-colors cursor-pointer">
+              <div className={cn("flex items-center gap-2 border rounded-full px-4 py-3 transition-all duration-200", isDark ? "bg-[#2a2a2a] border-[#3a3a3a] focus-within:border-[#555]" : "bg-[#F9FAFB] border-[#E5E7EB] focus-within:border-[#193B68]/40 focus-within:shadow-sm")}>
+                <button className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer", isDark ? "text-[#666] hover:text-white hover:bg-[#333]" : "text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F3F4F6]")}>
                   <Plus className="w-4 h-4" />
                 </button>
                 <input
@@ -349,8 +359,8 @@ export default function ChatPage() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask anything..."
-                  className="flex-1 bg-transparent text-[#111827] placeholder-[#9CA3AF] outline-none text-[15px]"
+                  placeholder={t("askAnything")}
+                  className={cn("flex-1 bg-transparent outline-none text-[15px]", isDark ? "text-white placeholder-[#666]" : "text-[#111827] placeholder-[#9CA3AF]")}
                   data-testid="chat-input-bottom"
                 />
                 <button
@@ -359,9 +369,10 @@ export default function ChatPage() {
                   className={cn(
                     "w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer",
                     input.trim() && !isAiTyping
-                      ? "bg-[#193B68] text-white hover:bg-[#142f54]"
-                      : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
+                      ? "text-white hover:opacity-90"
+                      : (isDark ? "bg-[#333] text-[#555] cursor-not-allowed" : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed")
                   )}
+                  style={input.trim() && !isAiTyping ? { backgroundColor: prefs.accentColor } : {}}
                   data-testid="chat-send-button-bottom"
                 >
                   <Send className="w-4 h-4" />

@@ -1,202 +1,212 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, LogOut, Mail, Check, Palette } from "lucide-react";
+import { ArrowLeft, Moon, Sun, LogOut, Mail, Check, Palette, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useApp } from "@/context/AppContext";
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_bluemind-dashboard/artifacts/laz1bzfy_6028489244713618696.jpg";
 
 const chatColors = [
-  { id: "blue", label: "Blue", value: "#193B68", ring: "ring-[#193B68]" },
-  { id: "green", label: "Green", value: "#10a37f", ring: "ring-[#10a37f]" },
-  { id: "red", label: "Red", value: "#dc2626", ring: "ring-[#dc2626]" },
-  { id: "purple", label: "Purple", value: "#7c3aed", ring: "ring-[#7c3aed]" },
+  { id: "#193B68", label: "Blue" },
+  { id: "#10a37f", label: "Green" },
+  { id: "#dc2626", label: "Red" },
+  { id: "#7c3aed", label: "Purple" },
 ];
 
 const accentColors = [
-  { id: "blue", label: "Blue", value: "#193B68" },
-  { id: "teal", label: "Teal", value: "#0d9488" },
-  { id: "indigo", label: "Indigo", value: "#4f46e5" },
-  { id: "rose", label: "Rose", value: "#e11d48" },
+  { id: "#193B68", label: "Blue" },
+  { id: "#0d9488", label: "Teal" },
+  { id: "#4f46e5", label: "Indigo" },
+  { id: "#e11d48", label: "Rose" },
 ];
 
-function getStoredPrefs() {
-  try {
-    const stored = localStorage.getItem("finda_profile_prefs");
-    return stored ? JSON.parse(stored) : null;
-  } catch { return null; }
-}
-
-function storePrefs(prefs) {
-  localStorage.setItem("finda_profile_prefs", JSON.stringify(prefs));
-}
+const languages = [
+  { id: "en", label: "English" },
+  { id: "ar", label: "العربية" },
+  { id: "sv", label: "Svenska" },
+];
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const stored = getStoredPrefs();
-
-  const [theme, setTheme] = useState(stored?.theme || "light");
-  const [chatColor, setChatColor] = useState(stored?.chatColor || "blue");
-  const [accentColor, setAccentColor] = useState(stored?.accentColor || "blue");
-
-  // Save prefs on change
-  useEffect(() => {
-    storePrefs({ theme, chatColor, accentColor });
-  }, [theme, chatColor, accentColor]);
-
-  const handleThemeToggle = (newTheme) => {
-    setTheme(newTheme);
-    toast.success(`Switched to ${newTheme} mode`);
-  };
+  const { prefs, updatePref, t, isRTL } = useApp();
+  const isDark = prefs.theme === "dark";
 
   const handleLogout = () => {
-    toast.success("Logged out successfully");
+    toast.success(t("logout"));
     setTimeout(() => navigate("/"), 500);
   };
 
-  const handleChangeEmail = () => {
-    toast.info("Email change coming soon");
-  };
-
   return (
-    <div className="min-h-screen bg-[#FAFBFC] flex items-center justify-center px-4 py-10" data-testid="profile-page">
-      {/* Back button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="fixed top-5 left-5 flex items-center gap-1.5 text-[#6B7280] hover:text-[#111827] transition-colors duration-200 cursor-pointer z-10"
-        data-testid="back-button"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span className="text-sm font-medium">Back</span>
-      </button>
-
-      {/* Profile Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="w-full max-w-md bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-6 sm:p-8"
-        data-testid="profile-card"
-      >
-        {/* Header */}
-        <div className="text-center mb-7">
-          <img src={LOGO_URL} alt="Finda" className="w-10 h-10 object-contain mx-auto mb-3" style={{ background: 'none' }} />
-          <h1 className="text-xl font-semibold text-[#111827]">Profile</h1>
+    <div className={cn("min-h-screen flex flex-col", isDark ? "bg-[#1a1a1a]" : "bg-[#FAFBFC]")} data-testid="profile-page">
+      {/* Header */}
+      <header className={cn("border-b px-4 sm:px-6 py-4", isDark ? "bg-[#222] border-[#333]" : "bg-white border-[#E5E7EB]")}>
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className={cn("w-9 h-9 rounded-lg flex items-center justify-center transition-colors cursor-pointer", isDark ? "text-[#999] hover:text-white hover:bg-[#333]" : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]")}
+            data-testid="back-button"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <img src={LOGO_URL} alt="Finda" className="w-8 h-8 object-contain" style={{ background: 'none' }} />
+          <h1 className={cn("text-lg font-semibold", isDark ? "text-white" : "text-[#111827]")}>{t("profile")}</h1>
         </div>
+      </header>
 
+      {/* Content */}
+      <div className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-8">
         {/* User Info */}
-        <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 mb-6">
+        <section className={cn("rounded-xl border p-5 mb-6", isDark ? "bg-[#252525] border-[#333]" : "bg-white border-[#E5E7EB]")}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#EEF2FF] border border-[#E0E7FF] flex items-center justify-center flex-shrink-0">
-              <Mail className="w-4 h-4 text-[#193B68]" />
+            <div className={cn("w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0", isDark ? "bg-[#333]" : "bg-[#EEF2FF] border border-[#E0E7FF]")}>
+              <Mail className="w-5 h-5" style={{ color: prefs.accentColor }} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs text-[#9CA3AF] mb-0.5">Email</p>
-              <p className="text-sm text-[#111827] font-medium truncate">user@example.com</p>
+              <p className={cn("text-xs mb-0.5", isDark ? "text-[#888]" : "text-[#9CA3AF]")}>{t("email")}</p>
+              <p className={cn("text-sm font-medium truncate", isDark ? "text-white" : "text-[#111827]")}>user@example.com</p>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Theme Toggle */}
-        <div className="mb-6">
-          <p className="text-sm font-medium text-[#374151] mb-3">Theme</p>
-          <div className="grid grid-cols-2 gap-2 bg-[#F3F4F6] rounded-xl p-1">
-            <button
-              onClick={() => handleThemeToggle("light")}
-              className={cn(
-                "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer",
-                theme === "light"
-                  ? "bg-white text-[#111827] shadow-sm"
-                  : "text-[#6B7280] hover:text-[#111827]"
-              )}
-              data-testid="theme-light"
-            >
-              <Sun className="w-4 h-4" />
-              Light
-            </button>
-            <button
-              onClick={() => handleThemeToggle("dark")}
-              className={cn(
-                "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer",
-                theme === "dark"
-                  ? "bg-white text-[#111827] shadow-sm"
-                  : "text-[#6B7280] hover:text-[#111827]"
-              )}
-              data-testid="theme-dark"
-            >
-              <Moon className="w-4 h-4" />
-              Dark
-            </button>
-          </div>
-        </div>
+        {/* Appearance */}
+        <section className={cn("rounded-xl border p-5 mb-6", isDark ? "bg-[#252525] border-[#333]" : "bg-white border-[#E5E7EB]")}>
+          <h2 className={cn("text-base font-semibold mb-5", isDark ? "text-white" : "text-[#111827]")}>{t("appearance")}</h2>
 
-        {/* Chat Color */}
-        <div className="mb-6">
-          <p className="text-sm font-medium text-[#374151] mb-3">Chat Color</p>
-          <div className="flex items-center gap-3">
-            {chatColors.map((color) => (
+          {/* Theme */}
+          <div className="mb-6">
+            <p className={cn("text-sm font-medium mb-3", isDark ? "text-[#ccc]" : "text-[#374151]")}>{t("theme")}</p>
+            <div className={cn("grid grid-cols-2 gap-2 rounded-xl p-1", isDark ? "bg-[#1a1a1a]" : "bg-[#F3F4F6]")}>
               <button
-                key={color.id}
-                onClick={() => { setChatColor(color.id); toast.success(`Chat color set to ${color.label}`); }}
+                onClick={() => updatePref("theme", "light")}
                 className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ring-2 ring-offset-2",
-                  chatColor === color.id ? color.ring : "ring-transparent"
+                  "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer",
+                  prefs.theme === "light"
+                    ? (isDark ? "bg-[#333] text-white shadow-sm" : "bg-white text-[#111827] shadow-sm")
+                    : (isDark ? "text-[#888]" : "text-[#6B7280]")
                 )}
-                style={{ backgroundColor: color.value }}
-                data-testid={`chat-color-${color.id}`}
+                data-testid="theme-light"
               >
-                {chatColor === color.id && <Check className="w-4 h-4 text-white" />}
+                <Sun className="w-4 h-4" />
+                {t("light")}
+              </button>
+              <button
+                onClick={() => updatePref("theme", "dark")}
+                className={cn(
+                  "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer",
+                  prefs.theme === "dark"
+                    ? (isDark ? "bg-[#333] text-white shadow-sm" : "bg-white text-[#111827] shadow-sm")
+                    : (isDark ? "text-[#888]" : "text-[#6B7280]")
+                )}
+                data-testid="theme-dark"
+              >
+                <Moon className="w-4 h-4" />
+                {t("dark")}
+              </button>
+            </div>
+          </div>
+
+          {/* Chat Color */}
+          <div className="mb-6">
+            <p className={cn("text-sm font-medium mb-3", isDark ? "text-[#ccc]" : "text-[#374151]")}>{t("chatColor")}</p>
+            <div className="flex items-center gap-3">
+              {chatColors.map((color) => (
+                <button
+                  key={color.id}
+                  onClick={() => updatePref("chatColor", color.id)}
+                  className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ring-2 ring-offset-2",
+                    prefs.chatColor === color.id ? "ring-[#111827]" : "ring-transparent",
+                    isDark && "ring-offset-[#252525]"
+                  )}
+                  style={{ backgroundColor: color.id }}
+                  data-testid={`chat-color-${color.label.toLowerCase()}`}
+                >
+                  {prefs.chatColor === color.id && <Check className="w-4 h-4 text-white" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Accent Color */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Palette className={cn("w-4 h-4", isDark ? "text-[#888]" : "text-[#6B7280]")} />
+              <p className={cn("text-sm font-medium", isDark ? "text-[#ccc]" : "text-[#374151]")}>{t("appColor")}</p>
+            </div>
+            <div className="flex items-center gap-3">
+              {accentColors.map((color) => (
+                <button
+                  key={color.id}
+                  onClick={() => updatePref("accentColor", color.id)}
+                  className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ring-2 ring-offset-2",
+                    prefs.accentColor === color.id ? "ring-[#111827]" : "ring-transparent",
+                    isDark && "ring-offset-[#252525]"
+                  )}
+                  style={{ backgroundColor: color.id }}
+                  data-testid={`accent-color-${color.label.toLowerCase()}`}
+                >
+                  {prefs.accentColor === color.id && <Check className="w-4 h-4 text-white" />}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Language */}
+        <section className={cn("rounded-xl border p-5 mb-6", isDark ? "bg-[#252525] border-[#333]" : "bg-white border-[#E5E7EB]")}>
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className={cn("w-4 h-4", isDark ? "text-[#888]" : "text-[#6B7280]")} />
+            <h2 className={cn("text-base font-semibold", isDark ? "text-white" : "text-[#111827]")}>{t("language")}</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {languages.map((lang) => (
+              <button
+                key={lang.id}
+                onClick={() => updatePref("language", lang.id)}
+                className={cn(
+                  "py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer border",
+                  prefs.language === lang.id
+                    ? "text-white border-transparent"
+                    : (isDark ? "bg-[#1a1a1a] border-[#333] text-[#999] hover:text-white" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#6B7280] hover:text-[#111827]")
+                )}
+                style={prefs.language === lang.id ? { backgroundColor: prefs.accentColor } : {}}
+                data-testid={`lang-${lang.id}`}
+              >
+                {lang.label}
               </button>
             ))}
           </div>
-        </div>
-
-        {/* App Accent Color */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <Palette className="w-4 h-4 text-[#6B7280]" />
-            <p className="text-sm font-medium text-[#374151]">App Color</p>
-          </div>
-          <div className="flex items-center gap-3">
-            {accentColors.map((color) => (
-              <button
-                key={color.id}
-                onClick={() => { setAccentColor(color.id); toast.success(`App color set to ${color.label}`); }}
-                className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ring-2 ring-offset-2",
-                  accentColor === color.id ? "ring-[#111827]" : "ring-transparent"
-                )}
-                style={{ backgroundColor: color.value }}
-                data-testid={`accent-color-${color.id}`}
-              >
-                {accentColor === color.id && <Check className="w-4 h-4 text-white" />}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-[#E5E7EB] mb-6" />
+        </section>
 
         {/* Actions */}
-        <div className="space-y-3">
-          <button
-            onClick={handleChangeEmail}
-            className="w-full py-3 border border-[#E5E7EB] rounded-xl text-sm font-medium text-[#374151] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-all duration-200 cursor-pointer"
-            data-testid="change-email-button"
-          >
-            Change Email
-          </button>
-          <button
-            onClick={handleLogout}
-            className="w-full py-3 border border-red-200 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 hover:border-red-300 transition-all duration-200 cursor-pointer"
-            data-testid="logout-button"
-          >
-            Logout
-          </button>
-        </div>
-      </motion.div>
+        <section className={cn("rounded-xl border p-5", isDark ? "bg-[#252525] border-[#333]" : "bg-white border-[#E5E7EB]")}>
+          <h2 className={cn("text-base font-semibold mb-4", isDark ? "text-white" : "text-[#111827]")}>{t("actions")}</h2>
+          <div className="space-y-3">
+            <button
+              onClick={() => toast.info("Coming soon")}
+              className={cn(
+                "w-full py-3 rounded-xl text-sm font-medium border transition-all duration-200 cursor-pointer",
+                isDark ? "border-[#333] text-[#ccc] hover:bg-[#333]" : "border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB]"
+              )}
+              data-testid="change-email-button"
+            >
+              {t("changeEmail")}
+            </button>
+            <button
+              onClick={handleLogout}
+              className={cn(
+                "w-full py-3 rounded-xl text-sm font-medium border transition-all duration-200 cursor-pointer",
+                isDark ? "border-red-900 text-red-400 hover:bg-red-900/20" : "border-red-200 text-red-500 hover:bg-red-50"
+              )}
+              data-testid="logout-button"
+            >
+              {t("logout")}
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

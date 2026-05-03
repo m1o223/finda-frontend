@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Sidebar from "@/components/Sidebar";
+import { AppProvider, useApp } from "@/context/AppContext";
 import LandingPage from "@/pages/LandingPage";
 import AuthSelectionPage from "@/pages/AuthSelectionPage";
 import RegisterPage from "@/pages/RegisterPage";
@@ -13,31 +13,28 @@ import FeedbackPage from "@/pages/FeedbackPage";
 import ProfilePage from "@/pages/ProfilePage";
 import "@/App.css";
 
-const dashboardRoutes = ["/feedback"];
-
 function AppContent() {
   const location = useLocation();
-  const showSidebar = dashboardRoutes.some(route => location.pathname.startsWith(route));
+  const { prefs, isRTL } = useApp();
+  const isDark = prefs.theme === "dark";
 
   return (
-    <div className={showSidebar ? "min-h-screen bg-[#212121] text-white" : "min-h-screen"}>
-      {showSidebar && <Sidebar />}
-      
-      <main className={showSidebar ? "ml-16 min-h-screen" : ""}>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/auth" element={<AuthSelectionPage />} />
-            <Route path="/auth/register" element={<RegisterPage />} />
-            <Route path="/auth/login" element={<LoginPage />} />
-            <Route path="/chat" element={<ChatPage />} />
-            <Route path="/reminders" element={<RemindersPage />} />
-            <Route path="/feedback" element={<FeedbackPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Routes>
-        </AnimatePresence>
-      </main>
-      
+    <div
+      className={isDark ? "min-h-screen bg-[#1a1a1a] text-white" : "min-h-screen"}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<AuthSelectionPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
+          <Route path="/auth/login" element={<LoginPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/reminders" element={<RemindersPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </AnimatePresence>
       <Toaster position="top-center" />
     </div>
   );
@@ -45,11 +42,13 @@ function AppContent() {
 
 function App() {
   return (
-    <TooltipProvider delayDuration={100}>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </TooltipProvider>
+    <AppProvider>
+      <TooltipProvider delayDuration={100}>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </TooltipProvider>
+    </AppProvider>
   );
 }
 
