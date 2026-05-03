@@ -1,23 +1,18 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, GraduationCap, School, BookOpen, Building2, Construction } from "lucide-react";
+import { ArrowLeft, School, Construction } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_bluemind-dashboard/artifacts/laz1bzfy_6028489244713618696.jpg";
 
-const educationTypes = [
-  { id: "school", label: "School", icon: School, desc: "Normal school" },
-  { id: "highschool", label: "High School", icon: Building2, desc: "Gymnasium" },
-  { id: "university", label: "University", icon: GraduationCap, desc: "Higher education" },
-];
-
 const schools = [
   { id: "nordic", label: "Nordic School" },
   { id: "matteo", label: "Matteo Skolan" },
-  { id: "futura", label: "Futura School" },
   { id: "vitra", label: "Vitra School" },
+  { id: "stella", label: "Stella Academy" },
+  { id: "aurora", label: "Aurora School" },
 ];
 
 const grades = [
@@ -25,25 +20,28 @@ const grades = [
   { id: "6", label: "Grade 6" },
   { id: "7", label: "Grade 7" },
   { id: "8", label: "Grade 8" },
-  { id: "9", label: "Grade 9" },
-  { id: "hs1", label: "High School Year 1" },
-  { id: "hs2", label: "High School Year 2" },
-  { id: "hs3", label: "High School Year 3" },
 ];
 
 const subjects = [
   { id: "swedish", label: "Swedish" },
   { id: "english", label: "English" },
+  { id: "arabic", label: "Arabic" },
   { id: "math", label: "Math" },
   { id: "science", label: "Science" },
+  { id: "history", label: "History" },
+  { id: "geography", label: "Geography" },
 ];
 
-const sections = [
-  { id: "basics", label: "Basics" },
-  { id: "advanced", label: "Advanced" },
-  { id: "grammar", label: "Grammar" },
-  { id: "reading", label: "Reading" },
-  { id: "exercises", label: "Exercises" },
+const books = [
+  { id: "a", label: "Book A" },
+  { id: "b", label: "Book B" },
+  { id: "c", label: "Book C" },
+];
+
+const parts = [
+  { id: "1", label: "Part 1" },
+  { id: "2", label: "Part 2" },
+  { id: "3", label: "Part 3" },
 ];
 
 function StepIndicator({ current, total }) {
@@ -62,7 +60,7 @@ function StepIndicator({ current, total }) {
   );
 }
 
-function OptionCard({ label, desc, icon: Icon, isSelected, onClick }) {
+function OptionCard({ label, icon: Icon, isSelected, onClick }) {
   return (
     <button
       onClick={onClick}
@@ -79,16 +77,13 @@ function OptionCard({ label, desc, icon: Icon, isSelected, onClick }) {
             <Icon className={cn("w-5 h-5", isSelected ? "text-white" : "text-[#6B7280]")} />
           </div>
         )}
-        <div>
-          <p className={cn("font-medium text-sm sm:text-base", isSelected ? "text-[#193B68]" : "text-[#111827]")}>{label}</p>
-          {desc && <p className="text-xs text-[#9CA3AF] mt-0.5">{desc}</p>}
-        </div>
+        <p className={cn("font-medium text-sm sm:text-base", isSelected ? "text-[#193B68]" : "text-[#111827]")}>{label}</p>
       </div>
     </button>
   );
 }
 
-function SimpleOptionCard({ label, isSelected, onClick }) {
+function SimpleOption({ label, isSelected, onClick }) {
   return (
     <button
       onClick={onClick}
@@ -111,22 +106,24 @@ export default function LearningPage() {
 
   const [step, setStep] = useState(0);
   const [selections, setSelections] = useState({
-    educationType: null,
     school: null,
     grade: null,
     subject: null,
-    section: null,
+    book: null,
+    part: null,
   });
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
-  const totalSteps = selections.educationType === "school" ? 5 : 4;
+  const totalSteps = 5;
 
   const handleSelect = (key, value) => {
     setSelections((prev) => ({ ...prev, [key]: value }));
-    // Auto-advance on select
-    setTimeout(() => {
-      if (key === "section") return; // Don't advance on last step
-      setStep((s) => s + 1);
-    }, 200);
+    if (key === "part") {
+      setShowComingSoon(true);
+      setTimeout(() => navigate("/chat"), 2000);
+      return;
+    }
+    setTimeout(() => setStep((s) => s + 1), 200);
   };
 
   const handleBack = () => {
@@ -134,123 +131,101 @@ export default function LearningPage() {
     setStep((s) => s - 1);
   };
 
-  const getStepTitle = () => {
-    switch (step) {
-      case 0: return "Choose Education Type";
-      case 1: return selections.educationType === "school" ? "Select Your School" : "Select Grade";
-      case 2: return selections.educationType === "school" ? "Select Grade" : "Select Subject";
-      case 3: return selections.educationType === "school" ? "Select Subject" : "Select Section";
-      case 4: return "Select Section";
-      default: return "";
-    }
-  };
+  const stepTitles = [
+    "Select Your School",
+    "Select Grade",
+    "Select Subject",
+    "Which book are you studying?",
+    "Select Part",
+  ];
 
   const renderStep = () => {
-    // Step 0: Education Type
-    if (step === 0) {
+    if (showComingSoon) {
       return (
-        <div className="space-y-3">
-          {educationTypes.map((type) => (
-            <OptionCard
-              key={type.id}
-              label={type.label}
-              desc={type.desc}
-              icon={type.icon}
-              isSelected={selections.educationType === type.id}
-              onClick={() => handleSelect("educationType", type.id)}
-            />
-          ))}
-        </div>
-      );
-    }
-
-    // Step 1 (School path): School Selection
-    if (step === 1 && selections.educationType === "school") {
-      return (
-        <div className="space-y-3">
-          {schools.map((school) => (
-            <SimpleOptionCard
-              key={school.id}
-              label={school.label}
-              isSelected={selections.school === school.id}
-              onClick={() => handleSelect("school", school.id)}
-            />
-          ))}
-        </div>
-      );
-    }
-
-    // Grade Selection (step 1 for non-school, step 2 for school)
-    const gradeStep = selections.educationType === "school" ? 2 : 1;
-    if (step === gradeStep) {
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {grades.map((grade) => (
-            <SimpleOptionCard
-              key={grade.id}
-              label={grade.label}
-              isSelected={selections.grade === grade.id}
-              onClick={() => handleSelect("grade", grade.id)}
-            />
-          ))}
-        </div>
-      );
-    }
-
-    // Subject Selection
-    const subjectStep = selections.educationType === "school" ? 3 : 2;
-    if (step === subjectStep) {
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {subjects.map((subject) => (
-            <SimpleOptionCard
-              key={subject.id}
-              label={subject.label}
-              isSelected={selections.subject === subject.id}
-              onClick={() => handleSelect("subject", subject.id)}
-            />
-          ))}
-        </div>
-      );
-    }
-
-    // Section Selection
-    const sectionStep = selections.educationType === "school" ? 4 : 3;
-    if (step === sectionStep) {
-      return (
-        <div className="space-y-3">
-          {sections.map((section) => (
-            <SimpleOptionCard
-              key={section.id}
-              label={section.label}
-              isSelected={selections.section === section.id}
-              onClick={() => { setSelections((prev) => ({ ...prev, section: section.id })); setStep(totalSteps); }}
-            />
-          ))}
-        </div>
-      );
-    }
-
-    // Final: Coming Soon
-    if (step >= totalSteps) {
-      return (
-        <div className="text-center py-12 sm:py-16">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center py-12 sm:py-16"
+        >
           <div className="w-16 h-16 rounded-2xl bg-[#FEF3C7] flex items-center justify-center mx-auto mb-5">
             <Construction className="w-8 h-8 text-[#D97706]" />
           </div>
-          <h3 className="text-xl sm:text-2xl font-semibold text-[#111827] mb-2">This section is coming soon</h3>
-          <p className="text-[#6B7280] text-sm mb-8">We're working hard to bring you this content.</p>
-          <button
-            onClick={() => { setStep(0); setSelections({ educationType: null, school: null, grade: null, subject: null, section: null }); }}
-            className="px-6 py-3 bg-[#193B68] text-white rounded-xl text-sm font-medium hover:bg-[#142f54] transition-all cursor-pointer"
-          >
-            Start Over
-          </button>
-        </div>
+          <h3 className={cn("text-xl sm:text-2xl font-semibold mb-2", isDark ? "text-white" : "text-[#111827]")}>Coming Soon</h3>
+          <p className={cn("text-sm", isDark ? "text-[#888]" : "text-[#6B7280]")}>Redirecting to chat...</p>
+        </motion.div>
       );
     }
 
-    return null;
+    switch (step) {
+      case 0:
+        return (
+          <div className="space-y-3">
+            {schools.map((school) => (
+              <OptionCard
+                key={school.id}
+                label={school.label}
+                icon={School}
+                isSelected={selections.school === school.id}
+                onClick={() => handleSelect("school", school.id)}
+              />
+            ))}
+          </div>
+        );
+      case 1:
+        return (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {grades.map((grade) => (
+              <SimpleOption
+                key={grade.id}
+                label={grade.label}
+                isSelected={selections.grade === grade.id}
+                onClick={() => handleSelect("grade", grade.id)}
+              />
+            ))}
+          </div>
+        );
+      case 2:
+        return (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {subjects.map((subject) => (
+              <SimpleOption
+                key={subject.id}
+                label={subject.label}
+                isSelected={selections.subject === subject.id}
+                onClick={() => handleSelect("subject", subject.id)}
+              />
+            ))}
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-3">
+            {books.map((book) => (
+              <SimpleOption
+                key={book.id}
+                label={book.label}
+                isSelected={selections.book === book.id}
+                onClick={() => handleSelect("book", book.id)}
+              />
+            ))}
+          </div>
+        );
+      case 4:
+        return (
+          <div className="space-y-3">
+            {parts.map((part) => (
+              <SimpleOption
+                key={part.id}
+                label={part.label}
+                isSelected={selections.part === part.id}
+                onClick={() => handleSelect("part", part.id)}
+              />
+            ))}
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -274,17 +249,17 @@ export default function LearningPage() {
 
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {step < totalSteps && (
+        {!showComingSoon && (
           <>
             <StepIndicator current={step} total={totalSteps} />
             <p className={cn("text-xs mb-1", isDark ? "text-[#888]" : "text-[#9CA3AF]")}>Step {step + 1} of {totalSteps}</p>
-            <h2 className={cn("text-xl sm:text-2xl font-semibold mb-6", isDark ? "text-white" : "text-[#111827]")}>{getStepTitle()}</h2>
+            <h2 className={cn("text-xl sm:text-2xl font-semibold mb-6", isDark ? "text-white" : "text-[#111827]")}>{stepTitles[step]}</h2>
           </>
         )}
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={step}
+            key={showComingSoon ? "done" : step}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
