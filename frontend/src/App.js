@@ -10,6 +10,7 @@ import LoginPage from "@/pages/LoginPage";
 import ChatPage from "@/pages/ChatPage";
 import RemindersPage from "@/pages/RemindersPage";
 import FeedbackPage from "@/pages/FeedbackPage";
+import ProfilePage from "@/pages/ProfilePage";
 import "@/App.css";
 
 const dashboardRoutes = ["/feedback"];
@@ -32,6 +33,7 @@ function AppContent() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/reminders" element={<RemindersPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </AnimatePresence>
       </main>
