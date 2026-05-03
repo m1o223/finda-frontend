@@ -12,7 +12,7 @@ import RemindersPage from "@/pages/RemindersPage";
 import FeedbackPage from "@/pages/FeedbackPage";
 import "@/App.css";
 
-const dashboardRoutes = ["/reminders", "/feedback"];
+const dashboardRoutes = ["/feedback"];
 
 function AppContent() {
   const location = useLocation();

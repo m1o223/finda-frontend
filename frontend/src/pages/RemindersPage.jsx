@@ -1,161 +1,341 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Calendar, Clock, Plus, Bell, CheckCircle2, Circle, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, Search, MoreVertical, X, ArrowLeft, Clock, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_bluemind-dashboard/artifacts/laz1bzfy_6028489244713618696.jpg";
 
 const initialReminders = [
-  { id: 1, title: "Team meeting", description: "Weekly sync", dueDate: new Date(Date.now() + 86400000), completed: false, priority: "high" },
-  { id: 2, title: "Review proposal", description: "Q1 project", dueDate: new Date(Date.now() + 172800000), completed: false, priority: "medium" },
-  { id: 3, title: "Update docs", description: "API v2", dueDate: new Date(Date.now() + 259200000), completed: true, priority: "low" },
+  { id: 1, title: "Team standup meeting", description: "Weekly sync with the development team", date: "2026-02-20", time: "09:00" },
+  { id: 2, title: "Submit project proposal", description: "Final draft for the Q1 project", date: "2026-02-21", time: "14:00" },
+  { id: 3, title: "Doctor appointment", description: "Annual checkup at city clinic", date: "2026-02-22", time: "10:30" },
+  { id: 4, title: "Call with client", description: "Discuss requirements for new feature", date: "2026-02-23", time: "16:00" },
 ];
 
-const priorityStyles = {
-  high: "border-l-red-500",
-  medium: "border-l-yellow-500",
-  low: "border-l-green-500",
-};
+function formatDate(dateStr) {
+  const date = new Date(dateStr + "T00:00:00");
+  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
 
-export default function RemindersPage() {
-  const [reminders, setReminders] = useState(initialReminders);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newReminder, setNewReminder] = useState({ title: "", description: "", dueDate: new Date(), priority: "medium" });
+function formatTime(timeStr) {
+  const [h, m] = timeStr.split(":");
+  const hour = parseInt(h);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${m} ${ampm}`;
+}
 
-  const handleToggle = (id) => setReminders((prev) => prev.map((r) => r.id === id ? { ...r, completed: !r.completed } : r));
-  const handleDelete = (id) => setReminders((prev) => prev.filter((r) => r.id !== id));
-  
-  const handleAddReminder = () => {
-    if (!newReminder.title.trim()) return;
-    setReminders((prev) => [...prev, { id: Date.now(), ...newReminder, completed: false }]);
-    setNewReminder({ title: "", description: "", dueDate: new Date(), priority: "medium" });
-    setIsDialogOpen(false);
-  };
-
-  const activeReminders = reminders.filter((r) => !r.completed);
-  const completedReminders = reminders.filter((r) => r.completed);
+function ReminderCard({ reminder, onEdit, onDelete }) {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen bg-[#212121] p-6"
-      data-testid="reminders-page"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:border-[#D1D5DB] hover:shadow-sm transition-all duration-200 relative"
+      data-testid={`reminder-card-${reminder.id}`}
     >
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h1 className="text-2xl font-semibold">Reminders</h1>
-            <p className="text-[#b4b4b4] text-sm mt-1">Stay on top of your tasks</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-[#111827] font-medium text-base truncate">{reminder.title}</h3>
+          <p className="text-[#6B7280] text-sm mt-1 line-clamp-2">{reminder.description}</p>
+          <div className="flex items-center gap-4 mt-3">
+            <span className="flex items-center gap-1.5 text-[#9CA3AF] text-xs">
+              <Calendar className="w-3.5 h-3.5" />
+              {formatDate(reminder.date)}
+            </span>
+            <span className="flex items-center gap-1.5 text-[#9CA3AF] text-xs">
+              <Clock className="w-3.5 h-3.5" />
+              {formatTime(reminder.time)}
+            </span>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-[#10a37f] hover:bg-[#0e8f70] text-white rounded-xl px-5 py-5 transition-all duration-200 hover:scale-[1.02]" data-testid="add-reminder-button">
-                <Plus className="w-4 h-4 mr-2" />Add Reminder
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-[#2f2f2f] border-[#4a4a4a] text-white max-w-md" data-testid="add-reminder-dialog">
-              <DialogHeader>
-                <DialogTitle>New Reminder</DialogTitle>
-                <DialogDescription className="text-[#b4b4b4]">Create a new reminder</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                <div>
-                  <label className="text-sm text-[#b4b4b4] mb-1 block">Title</label>
-                  <Input value={newReminder.title} onChange={(e) => setNewReminder({ ...newReminder, title: e.target.value })} placeholder="Reminder title" className="bg-[#303030] border-[#4a4a4a] text-white rounded-lg" data-testid="reminder-title-input" />
-                </div>
-                <div>
-                  <label className="text-sm text-[#b4b4b4] mb-1 block">Description</label>
-                  <Input value={newReminder.description} onChange={(e) => setNewReminder({ ...newReminder, description: e.target.value })} placeholder="Description" className="bg-[#303030] border-[#4a4a4a] text-white rounded-lg" data-testid="reminder-description-input" />
-                </div>
-                <div>
-                  <label className="text-sm text-[#b4b4b4] mb-1 block">Due Date</label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full justify-start bg-[#303030] border-[#4a4a4a] text-white hover:bg-[#3a3a3a] rounded-lg" data-testid="reminder-date-picker">
-                        <Calendar className="w-4 h-4 mr-2" />{format(newReminder.dueDate, "PPP")}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 bg-[#2f2f2f] border-[#4a4a4a]" align="start">
-                      <CalendarComponent mode="single" selected={newReminder.dueDate} onSelect={(date) => date && setNewReminder({ ...newReminder, dueDate: date })} className="bg-[#2f2f2f] text-white" />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div>
-                  <label className="text-sm text-[#b4b4b4] mb-1 block">Priority</label>
-                  <div className="flex gap-2">
-                    {["low", "medium", "high"].map((p) => (
-                      <button key={p} onClick={() => setNewReminder({ ...newReminder, priority: p })} className={cn("flex-1 py-2 rounded-lg text-sm capitalize transition-colors", newReminder.priority === p ? "bg-[#10a37f] text-white" : "bg-[#303030] text-[#b4b4b4] hover:bg-[#3a3a3a]")} data-testid={`priority-${p}`}>{p}</button>
-                    ))}
-                  </div>
-                </div>
-                <Button onClick={handleAddReminder} disabled={!newReminder.title.trim()} className="w-full bg-[#10a37f] hover:bg-[#0e8f70] text-white rounded-lg" data-testid="save-reminder-button">Save Reminder</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 mb-10">
-          {[{ label: "Total", value: reminders.length, icon: Bell }, { label: "Active", value: activeReminders.length, icon: Circle }, { label: "Completed", value: completedReminders.length, icon: CheckCircle2, color: "text-[#10a37f]" }, { label: "Overdue", value: activeReminders.filter((r) => new Date(r.dueDate) < new Date()).length, icon: Clock, color: "text-red-400" }].map((stat) => (
-            <div key={stat.label} className="bg-[#2f2f2f] border border-[#4a4a4a] rounded-xl p-4">
-              <div className={cn("flex items-center gap-2 text-[#b4b4b4] mb-1", stat.color)}>
-                <stat.icon className="w-4 h-4" /><span className="text-sm">{stat.label}</span>
-              </div>
-              <p className="text-2xl font-semibold">{stat.value}</p>
-            </div>
-          ))}
-        </div>
+        {/* 3-dot menu */}
+        <div className="relative">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F3F4F6] transition-colors cursor-pointer"
+            data-testid={`reminder-menu-${reminder.id}`}
+          >
+            <MoreVertical className="w-4 h-4" />
+          </button>
 
-        {activeReminders.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-sm font-medium text-[#b4b4b4] mb-4">Active</h2>
-            <div className="space-y-3">
-              {activeReminders.map((reminder) => (
-                <div key={reminder.id} className={cn("bg-[#2f2f2f] border border-[#4a4a4a] rounded-xl p-4 border-l-4", priorityStyles[reminder.priority])} data-testid={`reminder-card-${reminder.id}`}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <button onClick={() => handleToggle(reminder.id)} className="mt-0.5 text-[#b4b4b4] hover:text-white" data-testid={`reminder-toggle-${reminder.id}`}><Circle className="w-5 h-5" /></button>
-                      <div>
-                        <h3 className="font-medium">{reminder.title}</h3>
-                        <p className="text-sm text-[#b4b4b4]">{reminder.description}</p>
-                        <div className="flex items-center gap-2 text-xs text-[#6b6b6b] mt-2"><Clock className="w-3 h-3" />{format(new Date(reminder.dueDate), "MMM d, yyyy")}</div>
-                      </div>
-                    </div>
-                    <button onClick={() => handleDelete(reminder.id)} className="text-[#6b6b6b] hover:text-red-400" data-testid={`reminder-delete-${reminder.id}`}><Trash2 className="w-4 h-4" /></button>
-                  </div>
-                </div>
-              ))}
+          {menuOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+              <div className="absolute right-0 top-9 bg-white border border-[#E5E7EB] rounded-lg shadow-lg z-20 py-1 w-28" data-testid={`reminder-dropdown-${reminder.id}`}>
+                <button
+                  onClick={() => { onEdit(reminder); setMenuOpen(false); }}
+                  className="w-full px-3 py-2 text-sm text-[#374151] hover:bg-[#F9FAFB] text-left transition-colors cursor-pointer"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => { onDelete(reminder.id); setMenuOpen(false); }}
+                  className="w-full px-3 py-2 text-sm text-red-500 hover:bg-[#FEF2F2] text-left transition-colors cursor-pointer"
+                >
+                  Delete
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ReminderModal({ isOpen, onClose, onSave, editData }) {
+  const [formData, setFormData] = useState(
+    editData || { title: "", description: "", date: "", time: "" }
+  );
+
+  const isEdit = !!editData;
+  const isValid = formData.title.trim() && formData.date && formData.time;
+
+  const handleSave = () => {
+    if (!isValid) return;
+    onSave({
+      title: formData.title.trim(),
+      description: formData.description.trim(),
+      date: formData.date,
+      time: formData.time,
+    });
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black/20" onClick={onClose} />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="relative bg-white rounded-2xl shadow-xl border border-[#E5E7EB] w-full max-w-md p-6 z-10"
+        data-testid="reminder-modal"
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F3F4F6] transition-colors cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        <h2 className="text-lg font-semibold text-[#111827] mb-6">
+          {isEdit ? "Edit Reminder" : "Create Reminder"}
+        </h2>
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium text-[#374151] mb-1.5 block">Title</label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Reminder title"
+              className="w-full px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:border-[#193B68]/40 focus:ring-1 focus:ring-[#193B68]/20 transition-all"
+              data-testid="modal-title-input"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-[#374151] mb-1.5 block">Description</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Add a description (optional)"
+              rows={3}
+              className="w-full px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:border-[#193B68]/40 focus:ring-1 focus:ring-[#193B68]/20 transition-all resize-none"
+              data-testid="modal-description-input"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-medium text-[#374151] mb-1.5 block">Date</label>
+              <input
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                className="w-full px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm text-[#111827] focus:outline-none focus:border-[#193B68]/40 focus:ring-1 focus:ring-[#193B68]/20 transition-all"
+                data-testid="modal-date-input"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-[#374151] mb-1.5 block">Time</label>
+              <input
+                type="time"
+                value={formData.time}
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                className="w-full px-4 py-3 border border-[#E5E7EB] rounded-xl text-sm text-[#111827] focus:outline-none focus:border-[#193B68]/40 focus:ring-1 focus:ring-[#193B68]/20 transition-all"
+                data-testid="modal-time-input"
+              />
             </div>
           </div>
-        )}
+        </div>
 
-        {completedReminders.length > 0 && (
-          <div>
-            <h2 className="text-sm font-medium text-[#6b6b6b] mb-4">Completed</h2>
-            <div className="space-y-3">
-              {completedReminders.map((reminder) => (
-                <div key={reminder.id} className="bg-[#2f2f2f] border border-[#4a4a4a] rounded-xl p-4 opacity-60" data-testid={`reminder-card-${reminder.id}`}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <button onClick={() => handleToggle(reminder.id)} className="mt-0.5 text-[#10a37f]" data-testid={`reminder-toggle-${reminder.id}`}><CheckCircle2 className="w-5 h-5" /></button>
-                      <div>
-                        <h3 className="font-medium line-through text-[#6b6b6b]">{reminder.title}</h3>
-                        <p className="text-sm text-[#6b6b6b]">{reminder.description}</p>
-                      </div>
-                    </div>
-                    <button onClick={() => handleDelete(reminder.id)} className="text-[#6b6b6b] hover:text-red-400" data-testid={`reminder-delete-${reminder.id}`}><Trash2 className="w-4 h-4" /></button>
-                  </div>
-                </div>
-              ))}
+        {/* Buttons */}
+        <div className="flex items-center gap-3 mt-6">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 border border-[#E5E7EB] rounded-xl text-sm font-medium text-[#6B7280] hover:bg-[#F9FAFB] transition-colors cursor-pointer"
+            data-testid="modal-cancel"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!isValid}
+            className="flex-1 py-3 bg-[#193B68] text-white rounded-xl text-sm font-medium hover:bg-[#142f54] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+            data-testid="modal-save"
+          >
+            {isEdit ? "Save" : "Create"}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+export default function RemindersPage() {
+  const navigate = useNavigate();
+  const [reminders, setReminders] = useState(initialReminders);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingReminder, setEditingReminder] = useState(null);
+
+  const filteredReminders = reminders.filter((r) => {
+    const query = searchQuery.toLowerCase();
+    return r.title.toLowerCase().includes(query) || r.description.toLowerCase().includes(query);
+  });
+
+  const handleCreate = (data) => {
+    setReminders((prev) => [...prev, { id: Date.now(), ...data }]);
+  };
+
+  const handleEdit = (reminder) => {
+    setEditingReminder(reminder);
+    setModalOpen(true);
+  };
+
+  const handleSave = (data) => {
+    if (editingReminder) {
+      setReminders((prev) =>
+        prev.map((r) => (r.id === editingReminder.id ? { ...r, ...data } : r))
+      );
+    } else {
+      handleCreate(data);
+    }
+    setEditingReminder(null);
+  };
+
+  const handleDelete = (id) => {
+    setReminders((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  const openCreateModal = () => {
+    setEditingReminder(null);
+    setModalOpen(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FAFBFC]" data-testid="reminders-page">
+      {/* Header */}
+      <header className="bg-white border-b border-[#E5E7EB] sticky top-0 z-10">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/chat")}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] transition-colors cursor-pointer"
+              data-testid="back-button"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <img src={LOGO_URL} alt="Finda" className="w-8 h-8 object-contain" style={{ background: 'none' }} />
+              <h1 className="text-lg font-semibold text-[#111827]">My Reminders</h1>
             </div>
+          </div>
+          <button
+            onClick={openCreateModal}
+            className="flex items-center gap-1.5 bg-[#193B68] text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-[#142f54] transition-all cursor-pointer"
+            data-testid="create-reminder-button"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">Create</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search reminders..."
+              className="w-full pl-11 pr-4 py-3 bg-white border border-[#E5E7EB] rounded-xl text-sm text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:border-[#193B68]/40 focus:ring-1 focus:ring-[#193B68]/20 transition-all"
+              data-testid="search-input"
+            />
+          </div>
+        </div>
+
+        {/* Reminders list */}
+        <div className="space-y-3">
+          <AnimatePresence>
+            {filteredReminders.map((reminder) => (
+              <ReminderCard
+                key={reminder.id}
+                reminder={reminder}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* Empty state */}
+        {filteredReminders.length === 0 && (
+          <div className="text-center py-16">
+            <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
+              <Clock className="w-6 h-6 text-[#9CA3AF]" />
+            </div>
+            <p className="text-[#6B7280] text-sm">
+              {searchQuery ? "No reminders match your search" : "No reminders yet"}
+            </p>
+            {!searchQuery && (
+              <button
+                onClick={openCreateModal}
+                className="mt-4 text-[#193B68] text-sm font-medium hover:underline cursor-pointer"
+              >
+                Create your first reminder
+              </button>
+            )}
           </div>
         )}
       </div>
-    </motion.div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {modalOpen && (
+          <ReminderModal
+            isOpen={modalOpen}
+            onClose={() => { setModalOpen(false); setEditingReminder(null); }}
+            onSave={handleSave}
+            editData={editingReminder ? { title: editingReminder.title, description: editingReminder.description, date: editingReminder.date, time: editingReminder.time } : null}
+          />
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
