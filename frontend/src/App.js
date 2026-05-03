@@ -11,6 +11,7 @@ import ChatPage from "@/pages/ChatPage";
 import RemindersPage from "@/pages/RemindersPage";
 import FeedbackPage from "@/pages/FeedbackPage";
 import ProfilePage from "@/pages/ProfilePage";
+import LearningPage from "@/pages/LearningPage";
 import "@/App.css";
 
 function AppContent() {
@@ -33,6 +34,7 @@ function AppContent() {
           <Route path="/reminders" element={<RemindersPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/learning" element={<LearningPage />} />
         </Routes>
       </AnimatePresence>
       <Toaster position="top-center" />

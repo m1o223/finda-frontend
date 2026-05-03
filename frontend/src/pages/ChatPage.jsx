@@ -55,7 +55,7 @@ function Sidebar({ isOpen, onToggle, onNewChat, isMobile, onClose }) {
   const navItems = [
     { id: "chat", icon: MessageSquare, label: t("chat"), action: onNewChat },
     { id: "reminders", icon: Bell, label: t("reminders"), action: () => navigate("/reminders") },
-    { id: "learning", icon: BookOpen, label: t("learning") },
+    { id: "learning", icon: BookOpen, label: t("learning"), action: () => navigate("/learning") },
     { id: "history", icon: Clock, label: t("history") },
     { id: "profile", icon: UserCircle, label: t("profile"), action: () => navigate("/profile") },
   ];
