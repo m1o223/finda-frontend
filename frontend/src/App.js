@@ -12,7 +12,7 @@ import RemindersPage from "@/pages/RemindersPage";
 import FeedbackPage from "@/pages/FeedbackPage";
 import "@/App.css";
 
-const dashboardRoutes = ["/chat", "/reminders", "/feedback"];
+const dashboardRoutes = ["/reminders", "/feedback"];
 
 function AppContent() {
   const location = useLocation();
