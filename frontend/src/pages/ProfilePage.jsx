@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, LogOut, Mail, Check, Palette, Globe } from "lucide-react";
+import { ArrowLeft, Moon, Sun, LogOut, Mail, Check, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
+import LanguageSelector from "@/components/LanguageSelector";
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_bluemind-dashboard/artifacts/laz1bzfy_6028489244713618696.jpg";
 
@@ -19,12 +20,6 @@ const accentColors = [
   { id: "#0d9488", label: "Teal" },
   { id: "#4f46e5", label: "Indigo" },
   { id: "#e11d48", label: "Rose" },
-];
-
-const languages = [
-  { id: "en", label: "English" },
-  { id: "ar", label: "العربية" },
-  { id: "sv", label: "Svenska" },
 ];
 
 export default function ProfilePage() {
@@ -156,28 +151,12 @@ export default function ProfilePage() {
 
         {/* Language */}
         <section className={cn("rounded-xl border p-5 mb-6", isDark ? "bg-[#252525] border-[#333]" : "bg-white border-[#E5E7EB]")}>
-          <div className="flex items-center gap-2 mb-4">
-            <Globe className={cn("w-4 h-4", isDark ? "text-[#888]" : "text-[#6B7280]")} />
-            <h2 className={cn("text-base font-semibold", isDark ? "text-white" : "text-[#111827]")}>{t("language")}</h2>
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            {languages.map((lang) => (
-              <button
-                key={lang.id}
-                onClick={() => updatePref("language", lang.id)}
-                className={cn(
-                  "py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer border",
-                  prefs.language === lang.id
-                    ? "text-white border-transparent"
-                    : (isDark ? "bg-[#1a1a1a] border-[#333] text-[#999] hover:text-white" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#6B7280] hover:text-[#111827]")
-                )}
-                style={prefs.language === lang.id ? { backgroundColor: prefs.accentColor } : {}}
-                data-testid={`lang-${lang.id}`}
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
+          <h2 className={cn("text-base font-semibold mb-4", isDark ? "text-white" : "text-[#111827]")}>{t("language")}</h2>
+          <LanguageSelector
+            currentLang={prefs.language}
+            onSelect={(code) => updatePref("language", code)}
+            isDark={isDark}
+          />
         </section>
 
         {/* Actions */}

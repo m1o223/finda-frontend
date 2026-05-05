@@ -269,7 +269,8 @@ export function AppProvider({ children }) {
   }, [prefs]);
 
   const t = (key) => translations[prefs.language]?.[key] || translations.en[key] || key;
-  const isRTL = prefs.language === "ar";
+  const rtlLangs = ["ar", "he", "fa", "ur", "ps", "sd", "ku"];
+  const isRTL = rtlLangs.includes(prefs.language);
 
   const updatePref = (key, value) => {
     setPrefs((prev) => ({ ...prev, [key]: value }));
