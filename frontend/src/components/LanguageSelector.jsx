@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Globe, Search, Check, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import languages from "@/data/languages";
+import { useApp } from "@/context/AppContext";
 
 export default function LanguageSelector({ currentLang, onSelect, isDark }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const modalRef = useRef(null);
   const searchRef = useRef(null);
+  const { t } = useApp();
 
   const currentLanguage = languages.find((l) => l.code === currentLang) || languages.find((l) => l.code === "en");
 
@@ -76,7 +78,7 @@ export default function LanguageSelector({ currentLang, onSelect, isDark }) {
             >
               {/* Header */}
               <div className={cn("flex items-center justify-between px-5 py-4 border-b", isDark ? "border-[#333]" : "border-[#E5E7EB]")}>
-                <h3 className={cn("text-base font-semibold", isDark ? "text-white" : "text-[#111827]")}>Select Language</h3>
+                <h3 className={cn("text-base font-semibold", isDark ? "text-white" : "text-[#111827]")}>{t("selectLanguage")}</h3>
                 <button
                   onClick={() => setIsOpen(false)}
                   className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer", isDark ? "text-[#888] hover:text-white hover:bg-[#333]" : "text-[#9CA3AF] hover:text-[#111827] hover:bg-[#F3F4F6]")}
@@ -94,7 +96,7 @@ export default function LanguageSelector({ currentLang, onSelect, isDark }) {
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search languages..."
+                    placeholder={t("searchLanguages")}
                     className={cn("flex-1 bg-transparent outline-none text-sm", isDark ? "text-white placeholder-[#666]" : "text-[#111827] placeholder-[#9CA3AF]")}
                     data-testid="language-search-input"
                   />
@@ -105,7 +107,7 @@ export default function LanguageSelector({ currentLang, onSelect, isDark }) {
               <div className="flex-1 overflow-y-auto px-2 py-2">
                 {filtered.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className={cn("text-sm", isDark ? "text-[#888]" : "text-[#9CA3AF]")}>No languages found</p>
+                    <p className={cn("text-sm", isDark ? "text-[#888]" : "text-[#9CA3AF]")}>{t("noLanguagesFound")}</p>
                   </div>
                 ) : (
                   filtered.map((lang) => {
