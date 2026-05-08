@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../services/authService";
 import { cn } from "@/lib/utils";
 
 export default function RegisterPage() {
@@ -32,10 +33,15 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!isFormValid) return;
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    toast.success("Account created successfully!");
-    setIsLoading(false);
-    navigate("/chat");
+    try {
+      const userData = await registerUser(formData.fullName, formData.email, formData.password);
+      toast.success("Account created successfully!");
+      setIsLoading(false);
+      navigate("/chat");
+    } catch (error) {
+      toast.error("Error creating account");
+      setIsLoading(false);
+    }
   };
 
   return (

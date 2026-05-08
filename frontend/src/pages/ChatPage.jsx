@@ -4,6 +4,8 @@ import { MessageSquare, Bell, BookOpen, Clock, UserCircle, Plus, Send, Menu, X, 
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
+import { sendMessageToAI } from "../services/authService";
+
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_bluemind-dashboard/artifacts/laz1bzfy_6028489244713618696.jpg";
 
@@ -187,7 +189,7 @@ export default function ChatPage() {
     setIsAiTyping(false);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim() || isAiTyping) return;
 
     const userMessage = { id: Date.now(), role: "user", content: input.trim() };
@@ -195,30 +197,40 @@ export default function ChatPage() {
     setInput("");
     setIsAiTyping(true);
 
-    setTimeout(() => {
-      const response = AI_RESPONSES[Math.floor(Math.random() * AI_RESPONSES.length)];
-      const aiMessage = {
-        id: Date.now() + 1,
-        role: "ai",
-        content: response,
-        isTyping: true,
-        onTypingComplete: () => {
-          setMessages((prev) =>
-            prev.map((m) => (m.id === aiMessage.id ? { ...m, isTyping: false } : m))
-          );
-          setIsAiTyping(false);
-        },
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-    }, 800);
+try {
+  const response = await sendMessageToAI(input);
+
+  const aiMessage = {
+    id: Date.now() + 1,
+    role: "ai",
+    content: response.reply,
+    isTyping: false,
+  };
+
+  setMessages((prev) => [...prev, aiMessage]);
+
+} catch (error) {
+
+  const errorMessage = {
+    id: Date.now() + 1,
+    role: "ai",
+    content: "AI failed to respond",
+    isTyping: false,
+  };
+
+  setMessages((prev) => [...prev, errorMessage]);
+
+} finally {
+  setIsAiTyping(false);
+}
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+};
 
   const hasMessages = messages.length > 0;
 

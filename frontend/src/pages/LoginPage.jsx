@@ -5,6 +5,7 @@ import { ArrowLeft, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { loginUser } from "../services/authService";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -20,10 +21,15 @@ export default function LoginPage() {
     e.preventDefault();
     if (!isFormValid) return;
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    toast.success("Welcome back!");
-    setIsLoading(false);
-    navigate("/chat");
+    try {
+      const userData = await loginUser(formData.email, formData.password);
+      toast.success("Welcome back!");
+      setIsLoading(false);
+      navigate("/chat");
+    } catch (error) {
+      toast.error("Invalid email or password");
+      setIsLoading(false);
+    }
   };
 
   return (
