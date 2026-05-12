@@ -1,21 +1,49 @@
-import api from "./api"
+import api from "./api";
 
 export const getReminders = async () => {
-  const { data } = await api.get("/api/reminders")
-  return data
-}
+  const token = localStorage.getItem("token");
 
-export const createReminder = async (reminderData) => {
-  const { data } = await api.post("/api/reminders", reminderData)
-  return data
-}
+  const res = await api.get("/reminders", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const updateReminder = async (id, reminderData) => {
-  const { data } = await api.put(`/api/reminders/${id}`, reminderData)
-  return data
-}
+  return res.data;
+};
+
+export const createReminder = async (data) => {
+  const token = localStorage.getItem("token");
+
+  const res = await api.post("/reminders", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+};
+
+export const updateReminder = async (id, data) => {
+  const token = localStorage.getItem("token");
+
+  const res = await api.put(`/reminders/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+};
 
 export const deleteReminder = async (id) => {
-  const { data } = await api.delete(`/api/reminders/${id}`)
-  return data
-}
+  const token = localStorage.getItem("token");
+
+  const res = await api.delete(`/reminders/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+};

@@ -307,14 +307,18 @@ export default function RemindersPage() {
     fetchReminders()
   }, [])
 
-  const fetchReminders = async () => {
-    try {
-      const data = await getReminders()
-      setReminders(data)
-    } catch (err) {
-      console.error(err)
-    }
+const fetchReminders = async () => {
+  try {
+    const data = await getReminders()
+
+    console.log(data)
+
+    setReminders(Array.isArray(data.items) ? data.items : [])
+  } catch (err) {
+    console.error(err)
+    setReminders([])
   }
+}
 
   const filteredReminders = reminders.filter((r) => {
     const query = searchQuery.toLowerCase()
