@@ -260,13 +260,40 @@ function loadPrefs() {
   } catch { return defaultPrefs; }
 }
 
+// Apply CSS vars immediately on module load (before React renders)
+function applyThemeToDOM(prefs) {
+  const root = document.documentElement;
+  const isDark = prefs.theme === "dark";
+  root.style.setProperty("--bg-page", isDark ? "#1a1a1a" : "#FAFBFC");
+  root.style.setProperty("--bg-card", isDark ? "#252525" : "#ffffff");
+  root.style.setProperty("--bg-input", isDark ? "#2a2a2a" : "#F9FAFB");
+  root.style.setProperty("--bg-hover", isDark ? "#333333" : "#F3F4F6");
+  root.style.setProperty("--bg-sidebar", isDark ? "#1e1e1e" : "#F7F8FA");
+  root.style.setProperty("--border-main", isDark ? "#333333" : "#E5E7EB");
+  root.style.setProperty("--border-light", isDark ? "#2a2a2a" : "#F3F4F6");
+  root.style.setProperty("--text-primary", isDark ? "#ffffff" : "#111827");
+  root.style.setProperty("--text-secondary", isDark ? "#999999" : "#6B7280");
+  root.style.setProperty("--text-muted", isDark ? "#666666" : "#9CA3AF");
+  root.style.setProperty("--text-placeholder", isDark ? "#555555" : "#9CA3AF");
+  root.style.setProperty("--accent", prefs.accentColor);
+  root.style.setProperty("--accent-light", prefs.accentColor + "15");
+  root.style.setProperty("--chat-color", prefs.chatColor);
+  document.body.classList.toggle("dark-mode", isDark);
+  document.body.classList.toggle("light-mode", !isDark);
+}
+
+// Apply immediately on load
+applyThemeToDOM(loadPrefs());
+
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
   const [prefs, setPrefs] = useState(loadPrefs);
 
+  // Apply CSS variables to document root whenever prefs change
   useEffect(() => {
     localStorage.setItem("finda_prefs", JSON.stringify(prefs));
+    applyThemeToDOM(prefs);
   }, [prefs]);
 
   // Translation function with English fallback
@@ -278,16 +305,14 @@ export function AppProvider({ children }) {
 
   const rtlLangs = ["ar", "he", "fa", "ur", "ps", "sd", "ku"];
   const isRTL = rtlLangs.includes(prefs.language);
-
-  // Check if current language has translations
-  const hasTranslations = !!translations[prefs.language];
+  const isDark = prefs.theme === "dark";
 
   const updatePref = (key, value) => {
     setPrefs((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
-    <AppContext.Provider value={{ prefs, updatePref, t, isRTL, hasTranslations }}>
+    <AppContext.Provider value={{ prefs, updatePref, t, isRTL, isDark }}>
       {children}
     </AppContext.Provider>
   );

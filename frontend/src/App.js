@@ -16,14 +16,10 @@ import "@/App.css";
 
 function AppContent() {
   const location = useLocation();
-  const { prefs, isRTL } = useApp();
-  const isDark = prefs.theme === "dark";
+  const { isRTL } = useApp();
 
   return (
-    <div
-      className={isDark ? "min-h-screen bg-[#1a1a1a] text-white" : "min-h-screen"}
-      dir={isRTL ? "rtl" : "ltr"}
-    >
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-primary)' }} dir={isRTL ? "rtl" : "ltr"}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<LandingPage />} />
@@ -34,7 +30,7 @@ function AppContent() {
           <Route path="/reminders" element={<RemindersPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/learning" element={<LearningPage />} />
+          <Route path="/learning" element={<LearningPage />} />
         </Routes>
       </AnimatePresence>
       <Toaster position="top-center" />
