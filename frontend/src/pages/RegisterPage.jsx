@@ -43,7 +43,7 @@ export default function RegisterPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-5 py-10"
+      className="min-h-screen bg-white flex items-center justify-center px-3 sm:px-5 py-8 sm:py-10"
       data-testid="register-page"
     >
       {/* Back button */}

@@ -136,7 +136,7 @@ export default function RemindersPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }} data-testid="reminders-page">
       <header className="border-b sticky top-0 z-10" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate("/chat")} className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors cursor-pointer" style={{ color: 'var(--text-secondary)' }} data-testid="back-button"><ArrowLeft className="w-5 h-5" /></button>
             <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function RemindersPage() {
           </button>
         </div>
       </header>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
         <div className="mb-6 relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
           <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("searchReminders")} className="w-full pl-11 pr-4 py-3 border rounded-xl text-sm focus:outline-none transition-all" style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-main)', color: 'var(--text-primary)' }} data-testid="search-input" />

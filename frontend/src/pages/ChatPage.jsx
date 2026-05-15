@@ -80,7 +80,7 @@ function Sidebar({ isOpen, onToggle, onNewChat, isMobile, onClose }) {
 function ChatMessage({ message, isLatestAi }) {
   const isUser = message.role === "user";
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className={cn("flex w-full mb-6", isUser ? "justify-end" : "justify-start")} data-testid={`chat-message-${message.role}`}>
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className={cn("flex w-full mb-4 sm:mb-6", isUser ? "justify-end" : "justify-start")} data-testid={`chat-message-${message.role}`}>
       {!isUser && (
         <div className="w-7 h-7 rounded-lg flex items-center justify-center mr-3 mt-0.5 flex-shrink-0" style={{ backgroundColor: 'var(--accent-light)' }}>
           <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
@@ -177,20 +177,20 @@ export default function ChatPage() {
 
         <div className="flex-1 overflow-y-auto">
           {!hasMessages ? (
-            <div className="h-full flex flex-col items-center justify-center px-4">
-              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: 'var(--accent-light)' }}>
+            <div className="h-full flex flex-col items-center justify-center px-3 sm:px-6">
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 sm:mb-10">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-5" style={{ backgroundColor: 'var(--accent-light)' }}>
                   <Sparkles className="w-6 h-6" style={{ color: 'var(--accent)' }} />
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{t("howCanIHelp")}</h2>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{t("howCanIHelp")}</h2>
                 <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{t("askMeAnything")}</p>
               </motion.div>
-              <div className="w-full max-w-2xl">
+              <div className="w-full max-w-2xl px-0">
                 <ChatInput input={input} setInput={setInput} onSend={handleSend} disabled={!input.trim()} testId="chat-input" />
               </div>
             </div>
           ) : (
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+            <div className="max-w-3xl mx-auto px-0 sm:px-6 py-5 sm:py-8">
               <AnimatePresence>
                 {messages.map((message, index) => <ChatMessage key={message.id} message={message} isLatestAi={message.role === "ai" && index === messages.length - 1} />)}
               </AnimatePresence>
@@ -212,7 +212,7 @@ export default function ChatPage() {
         </div>
 
         {hasMessages && (
-          <div className="border-t px-4 sm:px-6 py-4" style={{ borderColor: 'var(--border-main)', backgroundColor: 'var(--bg-page)' }}>
+          <div className="border-t px-3 sm:px-6 py-3 sm:py-4" style={{ borderColor: 'var(--border-main)', backgroundColor: 'var(--bg-page)' }}>
             <div className="max-w-3xl mx-auto">
               <ChatInput input={input} setInput={setInput} onSend={handleSend} disabled={!input.trim() || isAiTyping} testId="chat-input-bottom" />
             </div>

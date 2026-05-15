@@ -48,7 +48,7 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <div className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-8">
+      <div className="flex-1 max-w-2xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-8">
         {/* User Info */}
         <section className="rounded-xl border p-5 mb-6" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}>
           <div className="flex items-center gap-3">

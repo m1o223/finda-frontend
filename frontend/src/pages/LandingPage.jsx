@@ -140,23 +140,23 @@ function HeroSection() {
   const ref = useScrollFadeIn();
 
   return (
-    <section ref={ref} className="landing-section px-4 sm:px-6 md:px-12 lg:px-20 py-12 sm:py-16 md:py-20 lg:py-28" data-testid="hero-section">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 sm:gap-12 md:gap-16 lg:gap-24">
+    <section ref={ref} className="landing-section px-4 sm:px-6 md:px-12 lg:px-20 py-8 sm:py-16 md:py-20 lg:py-28" data-testid="hero-section">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 sm:gap-12 md:gap-16 lg:gap-24">
         {/* Left */}
-        <div className="flex-1 max-w-lg w-full">
-          <span className="inline-block bg-[#EEF2FF] text-[#193B68] text-xs font-semibold px-4 py-1.5 rounded-full mb-5 sm:mb-7 tracking-wide uppercase">
+        <div className="flex-1 w-full">
+          <span className="inline-block bg-[#EEF2FF] text-[#193B68] text-xs font-semibold px-3 sm:px-4 py-1.5 rounded-full mb-4 sm:mb-7 tracking-wide uppercase">
             AI Assistant for Everyday Life
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#111827] leading-tight mb-5 sm:mb-7 break-words">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#111827] leading-tight mb-4 sm:mb-7 break-words">
             Your AI assistant for learning, chatting, and staying organized
           </h1>
-          <p className="text-[#6B7280] text-base sm:text-lg leading-relaxed mb-7 sm:mb-9 break-words">
+          <p className="text-[#6B7280] text-sm sm:text-lg leading-relaxed mb-6 sm:mb-9 break-words">
             Finda brings the power of AI to your fingertips. Chat, learn, set reminders, and get things done smarter and faster.
           </p>
           <div className="mb-4 sm:mb-5">
             <button
               onClick={() => navigate("/auth/register")}
-              className="bg-[#193B68] text-white px-8 sm:px-9 py-3.5 sm:py-4 rounded-xl font-medium text-base hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02]"
+              className="bg-[#193B68] text-white w-full sm:w-auto px-8 sm:px-9 py-3.5 sm:py-4 rounded-xl font-medium text-base hover:bg-[#142f54] transition-all duration-200 hover:scale-[1.02]"
               data-testid="hero-get-started"
             >
               Start
@@ -169,7 +169,7 @@ function HeroSection() {
         </div>
 
         {/* Right */}
-        <div className="flex-1 w-full max-w-xl">
+        <div className="flex-1 w-full">
           <HeroMockUI />
         </div>
       </div>
@@ -205,11 +205,11 @@ function FeaturesSection() {
           <p className="text-[#6B7280] text-base sm:text-lg break-words">Powerful features to simplify your day-to-day life.</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 md:gap-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-7">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-7 md:p-9 hover:-translate-y-1 transition-all duration-200"
+              className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-2xl p-5 sm:p-7 md:p-9 hover:-translate-y-1 transition-all duration-200"
               data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s/g, '-')}`}
             >
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4 sm:mb-5">

@@ -101,7 +101,13 @@ input, textarea, button, a, [class*="animate"], [class*="transition"] {
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-/* Theme utility classes */
+/* Mobile-first responsive scaling */
+@media (max-width: 640px) {
+  .max-w-3xl, .max-w-2xl, .max-w-md, .max-w-sm {
+    max-width: 100% !important;
+  }
+}
+
 .themed-bg { background-color: var(--bg-page); }
 .themed-card { background-color: var(--bg-card); }
 .themed-input { background-color: var(--bg-input); }
