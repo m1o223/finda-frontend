@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Bell, BookOpen, Clock, UserCircle, Plus, Send, Menu, Sparkles, PanelLeftClose, PanelLeft } from "lucide-react";
+import { MessageSquare, Bell, BookOpen, Clock, UserCircle, Plus, Send, Menu, Sparkles, PanelLeftClose, PanelLeft, MessageCircleHeart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
@@ -38,6 +38,7 @@ function Sidebar({ isOpen, onToggle, onNewChat, isMobile, onClose }) {
     { id: "reminders", icon: Bell, label: t("reminders"), action: () => navigate("/reminders") },
     { id: "learning", icon: BookOpen, label: t("learning"), action: () => navigate("/learning") },
     { id: "history", icon: Clock, label: t("history") },
+    { id: "feedback", icon: MessageCircleHeart, label: "Feedback", action: () => navigate("/feedback") },
     { id: "profile", icon: UserCircle, label: t("profile"), action: () => navigate("/profile") },
   ];
 
